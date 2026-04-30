@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#ffffff" />
+  <meta name="apple-mobile-web-app-title" content="분노 조절" />
+  <title>분노 조절 훈련 일지</title>
+
+  <!-- Inline SVG favicon (브라우저 탭 아이콘) — 균형 심볼 -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230d0d0d'/%3E%3Ccircle cx='50' cy='50' r='38' fill='%23111'/%3E%3Cpath d='M50 12 A38 38 0 0 0 50 88 A19 19 0 0 1 50 50 A19 19 0 0 0 50 12Z' fill='%23C62828' opacity='0.9'/%3E%3Cpath d='M50 12 A38 38 0 0 1 50 88 A19 19 0 0 0 50 50 A19 19 0 0 1 50 12Z' fill='%231A237E' opacity='0.85'/%3E%3Ccircle cx='50' cy='31' r='7' fill='%231A237E' opacity='0.95'/%3E%3Ccircle cx='50' cy='69' r='7' fill='%23C62828' opacity='0.95'/%3E%3Ccircle cx='50' cy='50' r='38' fill='none' stroke='%23888' stroke-width='1' opacity='0.25'/%3E%3C/svg%3E" />
+
+  <!-- Apple touch icon (홈 화면 추가 시 아이콘) — PNG로 인라인 생성 -->
+  <script>
+  (function(){
+    // SVG → Canvas → PNG → apple-touch-icon 동적 생성
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+      <!-- 균형 심볼: 분노와 평온의 음양 -->
+      <rect width="512" height="512" rx="112" fill="#0d0d0d"/>
+      <!-- 배경 원 -->
+      <circle cx="256" cy="256" r="194" fill="#111"/>
+      <!-- 분노(붉은) 반쪽 -->
+      <path d="M256 62 A194 194 0 0 0 256 450 A97 97 0 0 1 256 256 A97 97 0 0 0 256 62Z" fill="#C62828" opacity="0.9"/>
+      <!-- 평온(남색) 반쪽 -->
+      <path d="M256 62 A194 194 0 0 1 256 450 A97 97 0 0 0 256 256 A97 97 0 0 1 256 62Z" fill="#1A237E" opacity="0.85"/>
+      <!-- 음 속의 양 (위쪽 작은 점: 붉은 반에 남색 점) -->
+      <circle cx="256" cy="159" r="36" fill="#1A237E" opacity="0.95"/>
+      <!-- 양 속의 음 (아래쪽 작은 점: 남색 반에 붉은 점) -->
+      <circle cx="256" cy="353" r="36" fill="#C62828" opacity="0.95"/>
+      <!-- 외곽 링 -->
+      <circle cx="256" cy="256" r="194" fill="none" stroke="#aaa" stroke-width="4" opacity="0.2"/>
+      <!-- 중심 분리선 힌트 -->
+      <line x1="256" y1="62" x2="256" y2="450" stroke="#0d0d0d" stroke-width="1.5" opacity="0.3"/>
+    </svg>`;
+    const blob = new Blob([svg], {type:'image/svg+xml'});
+    const url  = URL.createObjectURL(blob);
+    const img  = new Image(512, 512);
+    img.onload = function(){
+      const c = document.createElement('canvas');
+      c.width = c.height = 512;
+      const ctx = c.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      URL.revokeObjectURL(url);
+      const link = document.createElement('link');
+      link.rel   = 'apple-touch-icon';
+      link.sizes = '512x512';
+      link.href  = c.toDataURL('image/png');
+      document.head.appendChild(link);
+    };
+    img.src = url;
+  })();
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Serif+KR:wght@300;400&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-tap-highlight-color: transparent; }
+    body {
+      background: #ffffff;
+      color: #222;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 16px;
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
+      padding-bottom: env(safe-area-inset-bottom, 24px);
+    }
+
+    /* ── Layout ── */
+    #app { max-width: 480px; margin: 0 auto; padding-bottom: 60px; }
+
+    /* ── Header ── */
+    .header { padding: 40px 24px 16px; }
+    .header-label { font-family: 'Noto Serif KR', serif; font-size: 22px; color: #C62828; letter-spacing: 3px; margin-bottom: 10px; }
+    .header h1 { font-family: 'DM Serif Display', serif; font-size: 34px; font-weight: 400; color: #111; line-height: 1.2; }
+    .header h1 span { color: #999; font-size: 22px; }
+
+    /* ── Tabs ── */
+    .tabs { display: flex; padding: 0 24px; margin-bottom: 28px; border-bottom: 2px solid #e8e8e8; }
+    .tab-btn {
+      flex: 1; padding: 13px 0; background: none; border: none;
+      border-bottom: 2px solid transparent; margin-bottom: -2px;
+      color: #bbb; font-family: 'Noto Sans KR', sans-serif; font-size: 17px;
+      cursor: pointer; transition: all 0.2s; letter-spacing: 0.5px;
+    }
+    .tab-btn.active { border-bottom-color: #C62828; color: #C62828; }
+
+    /* ── Content ── */
+    .content { padding: 0 24px; }
+    .section { display: flex; flex-direction: column; gap: 22px; }
+    .hidden { display: none; }
+
+    /* ── Section divider ── */
+    .divider { display: flex; align-items: center; gap: 10px; margin: 4px 0; }
+    .divider-line { flex: 1; height: 1px; background: #ececec; }
+    .divider-label { font-family: 'Noto Serif KR', serif; font-size: 17px; color: #bbb; letter-spacing: 2px; white-space: nowrap; }
+
+    /* ── Field label ── */
+    .field-label { display: block; font-family: 'Noto Serif KR', serif; font-size: 16px; color: #888; margin-bottom: 10px; letter-spacing: 1px; }
+
+    /* ── Textarea ── */
+    textarea {
+      width: 100%; background: #f8f8f8; border: 1px solid #ddd; border-radius: 8px;
+      color: #222; font-family: 'Noto Sans KR', sans-serif; font-size: 22px;
+      line-height: 1.7; padding: 12px 14px; resize: none; outline: none;
+      transition: border-color 0.2s; -webkit-appearance: none;
+    }
+    textarea:focus { border-color: #C62828; }
+    textarea::placeholder { color: #ccc; }
+
+    /* ── Tag buttons ── */
+    .tag-group { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tag-btn {
+      padding: 7px 14px; border-radius: 20px;
+      border: 1.5px solid #ddd; background: transparent; color: #aaa;
+      font-size: 16px; font-family: 'Noto Sans KR', sans-serif;
+      cursor: pointer; transition: all 0.2s; -webkit-appearance: none;
+    }
+    .tag-btn.active { border-color: #C62828; background: rgba(198,40,40,0.08); color: #C62828; }
+
+    /* ── Gauge slider ── */
+    .gauge-wrap { user-select: none; }
+    .gauge-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .gauge-left { display: flex; align-items: center; gap: 8px; }
+    .gauge-label { font-family: 'Noto Serif KR', serif; font-size: 16px; color: #888; letter-spacing: 1px; }
+    .gauge-guide-btn {
+      background: rgba(198,40,40,0.07); border: 1px solid rgba(198,40,40,0.2);
+      border-radius: 10px; color: #C62828; font-size: 22px; padding: 2px 9px;
+      cursor: pointer; font-family: 'Noto Sans KR', sans-serif;
+    }
+    .gauge-right { text-align: right; }
+    .gauge-number { font-family: 'DM Serif Display', serif; font-size: 44px; line-height: 1; transition: color 0.3s; }
+    .gauge-name { font-size: 22px; color: #aaa; font-family: 'Noto Sans KR', sans-serif; margin-top: 2px; }
+
+    .guide-panel { background: #f8f8f8; border: 1px solid #e8e8e8; border-radius: 10px; padding: 12px 14px; margin-bottom: 14px; }
+    .guide-row { display: flex; align-items: flex-start; gap: 12px; padding: 5px 8px; border-radius: 7px; margin-bottom: 2px; transition: background 0.2s; }
+    .guide-row.active { background: rgba(198,40,40,0.06); }
+    .guide-range { font-family: 'DM Serif Display', serif; font-size: 17px; min-width: 36px; padding-top: 1px; }
+    .guide-text-label { font-size: 16px; color: #888; font-family: 'Noto Sans KR', sans-serif; }
+    .guide-row.active .guide-text-label { color: #C62828; }
+    .guide-text-desc { font-size: 22px; color: #bbb; font-family: 'Noto Sans KR', sans-serif; margin-top: 1px; }
+
+    .slider-track {
+      position: relative; height: 8px; border-radius: 4px; background: #e8e8e8;
+      cursor: pointer; touch-action: none;
+    }
+    .slider-fill { position: absolute; left: 0; top: 0; height: 100%; border-radius: 4px; transition: width 0.1s, background 0.3s; }
+    .slider-thumb {
+      position: absolute; top: 50%; width: 30px; height: 30px; border-radius: 50%;
+      border: 2.5px solid #ffffff; transform: translate(-50%, -50%);
+      transition: background 0.3s, left 0.1s; pointer-events: none;
+    }
+    .slider-marks { display: flex; justify-content: space-between; margin-top: 6px; }
+    .slider-mark { font-size: 22px; color: #ccc; font-family: monospace; }
+
+    /* ── Coping grid ── */
+    .coping-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .coping-btn {
+      padding: 12px; border-radius: 10px; text-align: left;
+      border: 1.5px solid #e8e8e8; background: #f8f8f8;
+      cursor: pointer; transition: all 0.2s; -webkit-appearance: none;
+    }
+    .coping-btn.active { border-color: #4FC3F7; background: rgba(79,195,247,0.07); }
+    .coping-icon { font-size: 28px; margin-bottom: 5px; }
+    .coping-name { font-size: 16px; font-weight: 500; color: #555; font-family: 'Noto Sans KR', sans-serif; margin-bottom: 4px; }
+    .coping-btn.active .coping-name { color: #0288D1; }
+    .coping-desc { font-size: 22px; color: #aaa; font-family: 'Noto Sans KR', sans-serif; line-height: 1.5; }
+
+    /* ── Feedback ── */
+    .feedback-good { background: rgba(129,199,132,0.06); border: 1px solid rgba(129,199,132,0.15); border-radius: 10px; padding: 10px 14px; font-size: 17px; color: #81C784; }
+    .feedback-bad  { background: rgba(239,83,80,0.05);  border: 1px solid rgba(239,83,80,0.15);  border-radius: 10px; padding: 10px 14px; font-size: 17px; color: #EF9A9A; }
+
+    /* ── Save button ── */
+    #save-btn {
+      width: 100%; padding: 14px; border-radius: 10px; border: 1.5px solid #C62828;
+      background: rgba(198,40,40,0.08); color: #C62828;
+      font-family: 'Noto Serif KR', serif; font-size: 19px;
+      cursor: pointer; transition: all 0.3s; letter-spacing: 1px;
+    }
+    #save-btn.saved { border-color: #388E3C; background: #e8f5e9; color: #388E3C; }
+
+    /* ── History cards ── */
+    .log-card { background: #f8f8f8; border: 1px solid #e8e8e8; border-radius: 12px; padding: 16px 18px; position: relative; margin-bottom: 12px; }
+    .log-date { font-size: 19px; color: #bbb; font-family: monospace; }
+    .log-timeslot { font-size: 22px; color: #aaa; font-family: 'Noto Sans KR', sans-serif; margin-top: 1px; }
+    .log-intensity-row { display: flex; align-items: center; gap: 8px; margin: 8px 0 10px; flex-wrap: wrap; }
+    .log-intensity { font-family: 'DM Serif Display', serif; font-size: 28px; }
+    .log-arrow { color: #ccc; font-size: 22px; }
+    .log-intensity-after { font-family: 'DM Serif Display', serif; font-size: 28px; }
+    .log-reduce-badge { font-size: 22px; background: rgba(56,142,60,0.08); color: #388E3C; border: 1px solid rgba(56,142,60,0.2); border-radius: 10px; padding: 2px 8px; }
+    .log-triggers { margin-left: auto; display: flex; flex-wrap: wrap; gap: 4px; justify-content: flex-end; max-width: 50%; }
+    .log-trigger-tag { font-size: 22px; background: rgba(198,40,40,0.07); color: #C62828; border: 1px solid rgba(198,40,40,0.18); border-radius: 10px; padding: 2px 7px; }
+    .log-field { margin: 5px 0; font-size: 17px; color: #555; line-height: 1.6; }
+    .log-field-label { color: #bbb; font-size: 22px; margin-right: 4px; }
+    .log-thought { border-left: 2px solid #e0e0e0; padding-left: 10px; color: #888; }
+    .log-action { font-size: 16px; color: #999; }
+    .log-activities { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+    .log-activity-tag { font-size: 22px; background: rgba(79,195,247,0.07); color: #0288D1; border: 1px solid rgba(79,195,247,0.25); border-radius: 10px; padding: 2px 8px; }
+    .log-alt { margin-top: 8px; font-size: 16px; color: #388E3C; padding: 6px 10px; background: rgba(56,142,60,0.06); border-radius: 6px; }
+    .log-delete { position: absolute; top: 12px; right: 14px; background: none; border: none; color: #ddd; font-size: 28px; cursor: pointer; line-height: 1; padding: 4px; }
+
+    /* ── Empty state ── */
+    .empty { text-align: center; padding: 60px 0; color: #bbb; font-size: 22px; }
+    .empty span { color: #C62828; font-size: 16px; display: block; margin-top: 8px; }
+
+    /* ── Stats ── */
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+    .stat-card { background: #f8f8f8; border: 1px solid #e8e8e8; border-radius: 10px; padding: 14px 12px; text-align: center; }
+    .stat-val { font-family: 'DM Serif Display', serif; font-size: 34px; color: #C62828; }
+    .stat-label { font-size: 19px; color: #aaa; margin-top: 4px; }
+    .stats-block { background: #f8f8f8; border: 1px solid #e8e8e8; border-radius: 10px; padding: 16px; margin-bottom: 12px; }
+    .stats-title { font-size: 22px; color: #bbb; font-family: 'Noto Serif KR', serif; letter-spacing: 1.5px; margin-bottom: 12px; }
+    .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .bar-name { font-size: 16px; color: #777; min-width: 72px; }
+    .bar-track { flex: 1; height: 4px; background: #e8e8e8; border-radius: 2px; }
+    .bar-fill { height: 100%; border-radius: 2px; }
+    .bar-count { font-size: 19px; color: #aaa; font-family: monospace; }
+    .chart-bars { display: flex; align-items: flex-end; gap: 6px; height: 70px; }
+    .chart-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+    .chart-bars-inner { display: flex; align-items: flex-end; gap: 1px; height: 60px; }
+    .chart-bar { border-radius: 2px 2px 0 0; }
+    .chart-label { font-size: 12px; color: #bbb; font-family: monospace; }
+    .chart-legend { display: flex; gap: 14px; margin-top: 10px; }
+    .legend-item { display: flex; align-items: center; gap: 5px; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+    .legend-text { font-size: 22px; color: #aaa; }
+
+    .hint { font-size: 22px; color: #ccc; font-family: monospace; margin-top: 8px; }
+
+    /* ── Stats period tabs ── */
+    .period-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+    .period-btn {
+      flex: 1; padding: 8px 0; border-radius: 20px;
+      border: 1.5px solid #e8e8e8; background: transparent; color: #bbb;
+      font-family: 'Noto Sans KR', sans-serif; font-size: 15px;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .period-btn.active { border-color: #C62828; background: rgba(198,40,40,0.08); color: #C62828; font-weight: 500; }
+
+    /* ── Chart label larger ── */
+    .chart-label { font-size: 13px; color: #888; font-family: 'DM Serif Display', serif; margin-top: 4px; }
+
+    /* ── Coping detail modal/panel ── */
+    .coping-detail-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 100;
+      display: flex; align-items: flex-end; justify-content: center;
+      animation: fadeIn 0.18s ease;
+    }
+    @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
+    .coping-detail-panel {
+      background: #fff; border-radius: 20px 20px 0 0;
+      padding: 28px 24px 40px; width: 100%; max-width: 480px;
+      animation: slideUp 0.22s ease;
+    }
+    @keyframes slideUp { from { transform: translateY(60px); opacity:0 } to { transform: translateY(0); opacity:1 } }
+    .coping-detail-icon { font-size: 44px; margin-bottom: 10px; }
+    .coping-detail-title { font-family: 'Noto Serif KR', serif; font-size: 22px; color: #111; margin-bottom: 6px; }
+    .coping-detail-subtitle { font-size: 14px; color: #aaa; margin-bottom: 20px; letter-spacing: 0.5px; }
+    .coping-detail-steps { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+    .coping-detail-steps li {
+      display: flex; gap: 12px; align-items: flex-start;
+      background: #f8f8f8; border-radius: 10px; padding: 12px 14px;
+    }
+    .coping-step-num {
+      min-width: 26px; height: 26px; border-radius: 50%;
+      background: rgba(198,40,40,0.1); color: #C62828;
+      font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .coping-step-text { font-size: 15px; color: #444; line-height: 1.6; }
+    .coping-detail-tip { font-size: 14px; color: #888; border-left: 3px solid #e8e8e8; padding-left: 12px; line-height: 1.7; margin-bottom: 20px; }
+    .coping-detail-close {
+      width: 100%; padding: 13px; border-radius: 10px;
+      border: 1.5px solid #e8e8e8; background: transparent; color: #888;
+      font-family: 'Noto Sans KR', sans-serif; font-size: 16px; cursor: pointer;
+    }
+
+    /* ── Reset button ── */
+    #reset-btn {
+      width: 100%; padding: 13px; border-radius: 10px; border: 1.5px solid #e0e0e0;
+      background: transparent; color: #bbb;
+      font-family: 'Noto Serif KR', serif; font-size: 17px;
+      cursor: pointer; transition: all 0.2s; letter-spacing: 1px; margin-top: 8px;
+    }
+    #reset-btn:hover { border-color: #C62828; color: #C62828; background: rgba(198,40,40,0.05); }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: #f5f5f5; }
+    ::-webkit-scrollbar-thumb { background: #ddd; border-radius: 2px; }
+  </style>
+</head>
+<body>
+<div id="app">
+  <!-- Header -->
+  <div class="header">
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:14px;">
+      <svg width="64" height="64" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" style="display:block;border-radius:18px;box-shadow:0 0 24px rgba(150,150,255,0.2);flex-shrink:0;">
+        <!-- 균형 심볼: 분노(붉은)와 평온(남색)의 음양 -->
+        <rect width="512" height="512" rx="112" fill="#0d0d0d"/>
+        <circle cx="256" cy="256" r="194" fill="#111"/>
+        <!-- 분노(붉은) 반쪽 -->
+        <path d="M256 62 A194 194 0 0 0 256 450 A97 97 0 0 1 256 256 A97 97 0 0 0 256 62Z" fill="#C62828" opacity="0.9"/>
+        <!-- 평온(남색) 반쪽 -->
+        <path d="M256 62 A194 194 0 0 1 256 450 A97 97 0 0 0 256 256 A97 97 0 0 1 256 62Z" fill="#1A237E" opacity="0.85"/>
+        <!-- 음 속의 양 -->
+        <circle cx="256" cy="159" r="36" fill="#1A237E" opacity="0.95"/>
+        <!-- 양 속의 음 -->
+        <circle cx="256" cy="353" r="36" fill="#C62828" opacity="0.95"/>
+        <!-- 외곽 링 -->
+        <circle cx="256" cy="256" r="194" fill="none" stroke="#aaa" stroke-width="4" opacity="0.2"/>
+      </svg>
+      <div>
+        <div class="header-label" style="margin-bottom:4px;">ANGER MANAGEMENT</div>
+        <h1 style="margin:0;">분노 조절<br><span>훈련 일지</span></h1>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="record">기록</button>
+    <button class="tab-btn" data-tab="history">히스토리</button>
+    <button class="tab-btn" data-tab="stats">통계</button>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+
+    <!-- ══ RECORD TAB ══ -->
+    <div id="tab-record" class="section">
+
+      <!-- 시간대 -->
+      <div>
+        <label class="field-label">날짜 · 시간대</label>
+        <div class="tag-group" id="timeslot-group">
+          <button class="tag-btn" data-val="새벽 (0–6시)">새벽 (0–6시)</button>
+          <button class="tag-btn" data-val="오전 (6–12시)">오전 (6–12시)</button>
+          <button class="tag-btn" data-val="오후 (12–18시)">오후 (12–18시)</button>
+          <button class="tag-btn" data-val="저녁 (18–24시)">저녁 (18–24시)</button>
+        </div>
+        <div class="hint">저장 시 현재 날짜·시각이 자동 기록됩니다</div>
+      </div>
+
+      <!-- 구분선 -->
+      <div class="divider"><div class="divider-line"></div><span class="divider-label">상황 기록</span><div class="divider-line"></div></div>
+
+      <!-- 상황 -->
+      <div>
+        <label class="field-label">상황</label>
+        <textarea id="situation" rows="2" placeholder="어떤 상황이었나요? 간단하게 적어보세요."></textarea>
+      </div>
+
+      <!-- 트리거 -->
+      <div>
+        <label class="field-label">트리거 (복수 선택 가능)</label>
+        <div class="tag-group" id="trigger-group">
+          <button class="tag-btn" data-val="무시당함">무시당함</button>
+          <button class="tag-btn" data-val="불공정">불공정</button>
+          <button class="tag-btn" data-val="피곤·배고픔">피곤·배고픔</button>
+          <button class="tag-btn" data-val="시간 압박">시간 압박</button>
+          <button class="tag-btn" data-val="비난">비난</button>
+          <button class="tag-btn" data-val="계획 변경">계획 변경</button>
+          <button class="tag-btn" data-val="통제 불가">통제 불가</button>
+          <button class="tag-btn" data-val="오해">오해</button>
+          <button class="tag-btn" data-val="거절">거절</button>
+          <button class="tag-btn" data-val="기타">기타</button>
+        </div>
+      </div>
+
+      <!-- 분노 강도 (전) -->
+      <div class="gauge-wrap" id="gauge-before">
+        <div class="gauge-header">
+          <div class="gauge-left">
+            <span class="gauge-label">분노 강도 (활동 전)</span>
+            <button class="gauge-guide-btn" id="guide-toggle">강도 안내 ?</button>
+          </div>
+          <div class="gauge-right">
+            <div class="gauge-number" id="gauge-before-num">5</div>
+            <div class="gauge-name" id="gauge-before-name">화가 남</div>
+          </div>
+        </div>
+        <div class="guide-panel hidden" id="guide-panel"></div>
+        <div class="slider-track" id="slider-before">
+          <div class="slider-fill" id="slider-before-fill"></div>
+          <div class="slider-thumb" id="slider-before-thumb"></div>
+        </div>
+        <div class="slider-marks">
+          <span class="slider-mark">0</span><span class="slider-mark">2</span>
+          <span class="slider-mark">4</span><span class="slider-mark">6</span>
+          <span class="slider-mark">8</span><span class="slider-mark">10</span>
+        </div>
+      </div>
+
+      <!-- 자동 생각 -->
+      <div>
+        <label class="field-label">자동 생각 (1문장)</label>
+        <textarea id="thought" rows="2" placeholder="그 순간 머릿속에 떠오른 생각은?"></textarea>
+      </div>
+
+      <!-- 행동 -->
+      <div>
+        <label class="field-label">내가 한 행동</label>
+        <textarea id="action" rows="2" placeholder="실제로 어떻게 반응했나요?"></textarea>
+      </div>
+
+      <!-- 구분선 -->
+      <div class="divider"><div class="divider-line"></div><span class="divider-label">분노 조절 활동</span><div class="divider-line"></div></div>
+
+      <!-- 조절 활동 -->
+      <div>
+        <label class="field-label">분노 조절 활동 선택 (복수 가능) <span style="font-size:14px;color:#aaa;font-family:'Noto Sans KR',sans-serif">· 아이콘 탭 = 자세히 보기</span></label>
+        <div class="coping-grid" id="coping-group">
+          <button class="coping-btn" data-val="breath478">
+            <div class="coping-icon">🫁</div>
+            <div class="coping-name">4-7-8 호흡법</div>
+            <div class="coping-desc">4초 들이쉬고 → 7초 참고 → 8초 내쉬기. 3회 반복</div>
+          </button>
+          <button class="coping-btn" data-val="boxbreath">
+            <div class="coping-icon">🔲</div>
+            <div class="coping-name">박스 호흡</div>
+            <div class="coping-desc">4초 들이쉬기 → 4초 참기 → 4초 내쉬기 → 4초 참기</div>
+          </button>
+          <button class="coping-btn" data-val="muscle">
+            <div class="coping-icon">💪</div>
+            <div class="coping-name">근육 이완법</div>
+            <div class="coping-desc">발끝부터 얼굴까지 각 근육을 5초 긴장 후 확 이완</div>
+          </button>
+          <button class="coping-btn" data-val="grounding">
+            <div class="coping-icon">🌿</div>
+            <div class="coping-name">5감 그라운딩</div>
+            <div class="coping-desc">보이는 것 5 · 들리는 것 4 · 느끼는 것 3가지 찾기</div>
+          </button>
+          <button class="coping-btn" data-val="walk">
+            <div class="coping-icon">🚶</div>
+            <div class="coping-name">자리 피하기</div>
+            <div class="coping-desc">잠시 자리를 벗어나 10분 걷거나 찬물로 세수하기</div>
+          </button>
+          <button class="coping-btn" data-val="write">
+            <div class="coping-icon">✍️</div>
+            <div class="coping-name">감정 쓰기</div>
+            <div class="coping-desc">느끼는 감정을 검열 없이 종이에 자유롭게 써 내려가기</div>
+          </button>
+          <button class="coping-btn" data-val="cold">
+            <div class="coping-icon">🧊</div>
+            <div class="coping-name">냉각법</div>
+            <div class="coping-desc">얼음·찬물로 손목·목 뒤를 식혀 신체 각성 낮추기</div>
+          </button>
+          <button class="coping-btn" data-val="count">
+            <div class="coping-icon">🔢</div>
+            <div class="coping-name">거꾸로 세기</div>
+            <div class="coping-desc">100부터 7씩 거꾸로 세기 — 전두엽 활성화에 도움</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- 분노 강도 (후) -->
+      <div class="gauge-wrap" id="gauge-after">
+        <div class="gauge-header">
+          <div class="gauge-left">
+            <span class="gauge-label">분노 강도 (활동 후)</span>
+          </div>
+          <div class="gauge-right">
+            <div class="gauge-number" id="gauge-after-num">3</div>
+            <div class="gauge-name" id="gauge-after-name">짜증스러움</div>
+          </div>
+        </div>
+        <div class="slider-track" id="slider-after">
+          <div class="slider-fill" id="slider-after-fill"></div>
+          <div class="slider-thumb" id="slider-after-thumb"></div>
+        </div>
+        <div class="slider-marks">
+          <span class="slider-mark">0</span><span class="slider-mark">2</span>
+          <span class="slider-mark">4</span><span class="slider-mark">6</span>
+          <span class="slider-mark">8</span><span class="slider-mark">10</span>
+        </div>
+      </div>
+
+      <!-- 피드백 -->
+      <div id="reduction-feedback"></div>
+
+      <!-- 구분선 -->
+      <div class="divider"><div class="divider-line"></div><span class="divider-label">성찰</span><div class="divider-line"></div></div>
+
+      <!-- 대안 -->
+      <div>
+        <label class="field-label">다음번 대안 1가지</label>
+        <textarea id="alternative" rows="2" placeholder="다음엔 어떻게 다르게 할 수 있을까요?"></textarea>
+      </div>
+
+      <button id="save-btn">기록 저장하기</button>
+    </div>
+
+    <!-- ══ HISTORY TAB ══ -->
+    <div id="tab-history" class="hidden">
+      <div id="history-list"></div>
+    </div>
+
+    <!-- ══ STATS TAB ══ -->
+    <div id="tab-stats" class="hidden">
+      <div class="period-tabs">
+        <button class="period-btn active" data-period="day">오늘</button>
+        <button class="period-btn" data-period="week">이번 주</button>
+        <button class="period-btn" data-period="month">이번 달</button>
+        <button class="period-btn" data-period="all">전체</button>
+      </div>
+      <div id="stats-content"></div>
+      <div style="padding: 12px 0 24px;">
+        <button id="reset-btn">🗑️ 전체 기록 초기화</button>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /app -->
+
+<script>
+// ── Constants ──────────────────────────────────────────────────────────────
+const STORAGE_KEY = 'anger_logs_v2';
+const ANGER_COLORS = ['#4FC3F7','#4FC3F7','#81C784','#81C784','#FFD54F','#FFD54F','#FFB74D','#FF8A65','#EF5350','#EF5350','#B71C1C'];
+const ANGER_GUIDE = [
+  { range:'0',    color:'#4FC3F7', label:'완전히 평온',  desc:'아무런 불편함 없음' },
+  { range:'1–2',  color:'#81C784', label:'약간 불편',    desc:'살짝 신경 쓰이지만 금방 잊힘' },
+  { range:'3–4',  color:'#FFD54F', label:'짜증스러움',   desc:'눈살이 찌푸려지고 집중이 흐트러짐' },
+  { range:'5–6',  color:'#FFB74D', label:'화가 남',      desc:'목소리가 높아지거나 말이 빨라짐' },
+  { range:'7–8',  color:'#FF8A65', label:'매우 화남',    desc:'몸이 긴장되고 말·행동이 거칠어짐' },
+  { range:'9–10', color:'#B71C1C', label:'극도로 격앙',  desc:'자제가 힘들고 충동적 행동 위험' },
+];
+const COPING_META = {
+  breath478: {
+    icon:'🫁', name:'4-7-8 호흡법',
+    subtitle:'부교감신경 활성화 · 즉각 진정 효과',
+    steps:[
+      '코로 4초 동안 천천히 숨을 들이쉽니다.',
+      '숨을 참으며 7초를 셉니다. 배에 압력을 느껴보세요.',
+      '입을 살짝 벌려 8초 동안 길게 내쉽니다.',
+      '이 사이클을 3~4회 반복합니다.',
+    ],
+    tip:'내쉬는 시간이 들이쉬는 시간보다 2배 길어야 부교감신경이 활성화됩니다. 처음엔 어지러울 수 있으니 앉아서 시도하세요.',
+  },
+  boxbreath: {
+    icon:'🔲', name:'박스 호흡',
+    subtitle:'군인·소방관이 사용하는 즉각 안정 기법',
+    steps:[
+      '4초 동안 코로 천천히 들이쉽니다.',
+      '숨을 참으며 4초를 셉니다.',
+      '4초 동안 천천히 내쉽니다.',
+      '다시 4초 동안 숨을 참습니다.',
+      '이 박스 사이클을 4~6회 반복합니다.',
+    ],
+    tip:'머릿속으로 정사각형을 그리며 각 변을 4초씩 따라가면 집중이 잘 됩니다. 눈을 감고 하면 더 효과적입니다.',
+  },
+  muscle: {
+    icon:'💪', name:'근육 이완법 (PMR)',
+    subtitle:'신체 긴장 해소 · 분노의 신체 반응 완화',
+    steps:[
+      '발을 5초간 꽉 쥐어 긴장시킨 후, 힘을 한번에 빼며 이완합니다.',
+      '종아리 → 허벅지 → 복부 순으로 같은 방식으로 반복합니다.',
+      '두 손을 주먹 쥐고 5초, 팔 전체를 긴장시킨 후 이완합니다.',
+      '어깨를 귀까지 끌어올려 5초 후 확 떨어뜨립니다.',
+      '마지막으로 얼굴 근육(눈·입)을 찡그렸다가 풀어줍니다.',
+    ],
+    tip:'긴장과 이완의 대비를 느끼는 것이 핵심입니다. 이완할 때 따뜻한 물결이 흐르는 느낌을 상상하면 도움이 됩니다.',
+  },
+  grounding: {
+    icon:'🌿', name:'5감 그라운딩 (5-4-3-2-1)',
+    subtitle:'현재 순간으로 돌아오는 마음챙김 기법',
+    steps:[
+      '👁 보이는 것 5가지를 천천히 찾아 마음속으로 말합니다.',
+      '👂 들리는 소리 4가지에 집중해 이름을 붙입니다.',
+      '✋ 피부로 느껴지는 것 3가지를 인식합니다 (공기, 옷감, 바닥 등).',
+      '👃 맡을 수 있는 냄새 2가지를 찾아봅니다.',
+      '👅 지금 입에서 느껴지는 맛 1가지를 인식합니다.',
+    ],
+    tip:'감각에 집중하는 행위 자체가 분노로 달아오른 뇌를 현재로 당겨옵니다. 천천히, 판단 없이 알아채는 것이 중요합니다.',
+  },
+  walk: {
+    icon:'🚶', name:'자리 피하기 (타임아웃)',
+    subtitle:'물리적 거리두기 · 충동 행동 예방',
+    steps:[
+      '"잠깐 자리를 비울게요"라고 짧게 말하고 자리를 뜹니다.',
+      '최소 10분간 걷거나 환경을 바꿉니다.',
+      '걷는 동안 호흡에 집중하며 빠르게 걷지 않도록 합니다.',
+      '찬물로 손목 안쪽이나 얼굴을 식혀도 효과적입니다.',
+      '진정된 후 돌아와 대화를 재개합니다.',
+    ],
+    tip:'자리를 피하는 것은 회피가 아니라 충동을 막기 위한 전략적 선택입니다. 돌아와서 해결하겠다는 의지가 중요합니다.',
+  },
+  write: {
+    icon:'✍️', name:'감정 쓰기 (표현적 글쓰기)',
+    subtitle:'감정 처리 · 인지 재구성 촉진',
+    steps:[
+      '종이나 앱에 지금 느끼는 감정을 검열 없이 씁니다.',
+      '무슨 일이 있었는지, 왜 화가 났는지 사실대로 씁니다.',
+      '그 상황에서 내가 원했던 것이 무엇인지 써봅니다.',
+      '상대방 입장에서 어떻게 보였을지 한 줄 써봅니다.',
+      '지금 이 감정에 이름을 붙이고 (예: "모욕감") 마무리합니다.',
+    ],
+    tip:'문법이나 문장은 신경 쓰지 않아도 됩니다. 쓰고 나서 찢어버려도 효과가 있습니다. 뇌가 감정을 언어로 처리하는 것 자체가 치유입니다.',
+  },
+  cold: {
+    icon:'🧊', name:'냉각법 (다이브 리플렉스)',
+    subtitle:'즉각적 생리 반응 이용 · 극도 흥분 진정',
+    steps:[
+      '세면대에 차가운 물을 받거나 얼음을 준비합니다.',
+      '두 눈을 감고 얼굴 전체(특히 광대뼈 아래)를 30초간 담급니다.',
+      '얼음이 있으면 손목 안쪽에 10~15초간 댑니다.',
+      '찬 물을 한 잔 천천히 마셔도 효과적입니다.',
+      '심박수가 내려가는 것을 느끼며 호흡을 고릅니다.',
+    ],
+    tip:'냉수는 포유류 잠수 반사(Dive Reflex)를 활성화해 10초 안에 심박수를 낮춥니다. 분노가 10점에 가까울 때 가장 빠른 방법입니다.',
+  },
+  count: {
+    icon:'🔢', name:'거꾸로 세기 (인지 개입)',
+    subtitle:'전두엽 재활성화 · 충동 제어력 회복',
+    steps:[
+      '100부터 시작해 7씩 뺀 수를 소리 내거나 마음속으로 말합니다.',
+      '100 → 93 → 86 → 79 → 72 → 65 …',
+      '계산에 집중하느라 분노 생각이 끊기는 것을 느낍니다.',
+      '틀려도 괜찮습니다. 다시 이어서 계속합니다.',
+      '5~10단계 후 몸 상태를 체크합니다.',
+    ],
+    tip:'어려운 암산 자체가 감정을 담당하는 편도체를 진정시키고 이성적 판단을 담당하는 전두엽을 깨웁니다. 화가 많이 났을수록 더 잘 작동합니다.',
+  },
+};
+
+// ── State ──────────────────────────────────────────────────────────────────
+let logs = [];
+try { logs = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch(e){}
+
+let form = { timeSlot:'', triggers:[], intensity:5, intensityAfter:3, copingActivities:[] };
+let guideOpen = false;
+let currentPeriod = 'day';
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+function saveLogs() { localStorage.setItem(STORAGE_KEY, JSON.stringify(logs)); }
+
+function guideForValue(v) {
+  if (v === 0) return ANGER_GUIDE[0];
+  if (v <= 2)  return ANGER_GUIDE[1];
+  if (v <= 4)  return ANGER_GUIDE[2];
+  if (v <= 6)  return ANGER_GUIDE[3];
+  if (v <= 8)  return ANGER_GUIDE[4];
+  return ANGER_GUIDE[5];
+}
+
+function formatDateTime(iso) {
+  const d = new Date(iso);
+  const date = d.toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric', weekday:'short' });
+  const time = d.toLocaleTimeString('ko-KR', { hour:'2-digit', minute:'2-digit' });
+  return { date, time };
+}
+
+function esc(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Slider logic ───────────────────────────────────────────────────────────
+function setupSlider(trackId, fillId, thumbId, numId, nameId, key) {
+  const track = document.getElementById(trackId);
+  const fill  = document.getElementById(fillId);
+  const thumb = document.getElementById(thumbId);
+  const numEl = document.getElementById(numId);
+  const nameEl= document.getElementById(nameId);
+
+  function getValFromEvent(e) {
+    const rect = track.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    return Math.round(pct * 10);
+  }
+
+  function updateUI(val) {
+    const pct = (val / 10) * 100;
+    const color = ANGER_COLORS[val];
+    fill.style.width = pct + '%';
+    fill.style.background = `linear-gradient(90deg, #4FC3F7, ${color})`;
+    thumb.style.left = pct + '%';
+    thumb.style.background = color;
+    thumb.style.boxShadow = `0 0 12px ${color}99`;
+    numEl.textContent = val;
+    numEl.style.color = color;
+    const g = guideForValue(val);
+    nameEl.textContent = g.label;
+    if (key === 'intensity') updateGuidePanel();
+    updateFeedback();
+  }
+
+  let dragging = false;
+  track.addEventListener('mousedown', e => { dragging = true; form[key] = getValFromEvent(e); updateUI(form[key]); e.preventDefault(); });
+  track.addEventListener('touchstart', e => { dragging = true; form[key] = getValFromEvent(e); updateUI(form[key]); }, { passive: true });
+  window.addEventListener('mousemove', e => { if (!dragging) return; form[key] = getValFromEvent(e); updateUI(form[key]); });
+  window.addEventListener('touchmove', e => { if (!dragging) return; form[key] = getValFromEvent(e); updateUI(form[key]); }, { passive: true });
+  window.addEventListener('mouseup', () => { dragging = false; });
+  window.addEventListener('touchend', () => { dragging = false; });
+
+  updateUI(form[key]);
+}
+
+// ── Guide panel ────────────────────────────────────────────────────────────
+function buildGuidePanel() {
+  const panel = document.getElementById('guide-panel');
+  panel.innerHTML = ANGER_GUIDE.map(g => `
+    <div class="guide-row" data-range="${g.range}">
+      <span class="guide-range" style="color:${g.color}">${g.range}</span>
+      <div>
+        <div class="guide-text-label">${esc(g.label)}</div>
+        <div class="guide-text-desc">${esc(g.desc)}</div>
+      </div>
+    </div>`).join('');
+}
+
+function updateGuidePanel() {
+  if (!guideOpen) return;
+  const current = guideForValue(form.intensity);
+  document.querySelectorAll('#guide-panel .guide-row').forEach(row => {
+    row.classList.toggle('active', row.dataset.range === current.range);
+  });
+}
+
+document.getElementById('guide-toggle').addEventListener('click', () => {
+  guideOpen = !guideOpen;
+  const panel = document.getElementById('guide-panel');
+  panel.classList.toggle('hidden', !guideOpen);
+  document.getElementById('guide-toggle').textContent = guideOpen ? '닫기' : '강도 안내 ?';
+  if (guideOpen) updateGuidePanel();
+});
+
+buildGuidePanel();
+
+// ── Feedback ───────────────────────────────────────────────────────────────
+function updateFeedback() {
+  const diff = form.intensity - form.intensityAfter;
+  const el = document.getElementById('reduction-feedback');
+  if (diff > 0) {
+    el.innerHTML = `<div class="feedback-good">👍 분노 강도가 <strong>${diff}점</strong> 낮아졌어요. 잘 하셨습니다!</div>`;
+  } else if (diff < 0) {
+    el.innerHTML = `<div class="feedback-bad">💬 강도가 올라갔네요. 다른 활동을 시도해 보세요.</div>`;
+  } else {
+    el.innerHTML = '';
+  }
+}
+
+// ── Init sliders ───────────────────────────────────────────────────────────
+setupSlider('slider-before','slider-before-fill','slider-before-thumb','gauge-before-num','gauge-before-name','intensity');
+setupSlider('slider-after', 'slider-after-fill', 'slider-after-thumb', 'gauge-after-num', 'gauge-after-name','intensityAfter');
+
+// ── Single-select tag groups ───────────────────────────────────────────────
+document.getElementById('timeslot-group').addEventListener('click', e => {
+  const btn = e.target.closest('.tag-btn');
+  if (!btn) return;
+  const val = btn.dataset.val;
+  form.timeSlot = form.timeSlot === val ? '' : val;
+  document.querySelectorAll('#timeslot-group .tag-btn').forEach(b => b.classList.toggle('active', b.dataset.val === form.timeSlot));
+});
+
+// ── Multi-select tag groups ────────────────────────────────────────────────
+document.getElementById('trigger-group').addEventListener('click', e => {
+  const btn = e.target.closest('.tag-btn');
+  if (!btn) return;
+  const val = btn.dataset.val;
+  const idx = form.triggers.indexOf(val);
+  if (idx >= 0) form.triggers.splice(idx, 1); else form.triggers.push(val);
+  btn.classList.toggle('active', form.triggers.includes(val));
+});
+
+document.getElementById('coping-group').addEventListener('click', e => {
+  const btn = e.target.closest('.coping-btn');
+  if (!btn) return;
+  // Tap on icon → show detail panel
+  const iconEl = btn.querySelector('.coping-icon');
+  if (e.target === iconEl || iconEl.contains(e.target)) {
+    showCopingDetail(btn.dataset.val);
+    return;
+  }
+  const val = btn.dataset.val;
+  const idx = form.copingActivities.indexOf(val);
+  if (idx >= 0) form.copingActivities.splice(idx, 1); else form.copingActivities.push(val);
+  btn.classList.toggle('active', form.copingActivities.includes(val));
+});
+
+// ── Save ───────────────────────────────────────────────────────────────────
+document.getElementById('save-btn').addEventListener('click', () => {
+  const situation = document.getElementById('situation').value.trim();
+  const thought   = document.getElementById('thought').value.trim();
+  if (!situation && !thought) {
+    alert('상황 또는 자동 생각을 입력해 주세요.');
+    return;
+  }
+  const log = {
+    id: Date.now(),
+    date: new Date().toISOString(),
+    timeSlot: form.timeSlot,
+    situation,
+    triggers: [...form.triggers],
+    intensity: form.intensity,
+    thought,
+    action: document.getElementById('action').value.trim(),
+    alternative: document.getElementById('alternative').value.trim(),
+    copingActivities: [...form.copingActivities],
+    intensityAfter: form.intensityAfter,
+  };
+  logs.push(log);
+  saveLogs();
+
+  // Reset form
+  document.getElementById('situation').value = '';
+  document.getElementById('thought').value = '';
+  document.getElementById('action').value = '';
+  document.getElementById('alternative').value = '';
+  form.timeSlot = '';
+  form.triggers = [];
+  form.copingActivities = [];
+  document.querySelectorAll('#timeslot-group .tag-btn, #trigger-group .tag-btn, #coping-group .coping-btn').forEach(b => b.classList.remove('active'));
+
+  const btn = document.getElementById('save-btn');
+  btn.textContent = '✓  저장되었어요';
+  btn.classList.add('saved');
+  setTimeout(() => { btn.textContent = '기록 저장하기'; btn.classList.remove('saved'); }, 2000);
+  setTimeout(() => switchTab('history'), 600);
+});
+
+// ── Tabs ───────────────────────────────────────────────────────────────────
+function switchTab(id) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === id));
+  document.getElementById('tab-record').classList.toggle('hidden', id !== 'record');
+  document.getElementById('tab-history').classList.toggle('hidden', id !== 'history');
+  document.getElementById('tab-stats').classList.toggle('hidden', id !== 'stats');
+  if (id === 'history') renderHistory();
+  if (id === 'stats')   renderStats();
+}
+document.querySelectorAll('.tab-btn').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
+
+// ── History ────────────────────────────────────────────────────────────────
+function renderHistory() {
+  const el = document.getElementById('history-list');
+  if (!logs.length) {
+    el.innerHTML = '<div class="empty">아직 기록이 없어요.<span>첫 번째 기록을 남겨보세요.</span></div>';
+    return;
+  }
+  el.innerHTML = [...logs].reverse().map(log => {
+    const { date, time } = formatDateTime(log.date);
+    const color = ANGER_COLORS[log.intensity];
+    const afterColor = log.intensityAfter != null ? ANGER_COLORS[log.intensityAfter] : null;
+    const reduction = afterColor ? log.intensity - log.intensityAfter : null;
+    const triggers = (log.triggers||[]).map(t => `<span class="log-trigger-tag">${esc(t)}</span>`).join('');
+    const activities = (log.copingActivities||[]).map(id => {
+      const m = COPING_META[id]; if (!m) return '';
+      return `<span class="log-activity-tag">${m.icon} ${esc(m.name)}</span>`;
+    }).join('');
+
+    return `
+    <div class="log-card">
+      <div class="log-date">${esc(date)}</div>
+      <div class="log-timeslot">${log.timeSlot ? `<span style="color:#444;margin-right:8px">${esc(log.timeSlot)}</span>` : ''}${esc(time)}</div>
+      <div class="log-intensity-row">
+        <span class="log-intensity" style="color:${color}">강도 ${log.intensity}</span>
+        ${afterColor ? `
+          <span class="log-arrow">→</span>
+          <span class="log-intensity-after" style="color:${afterColor}">${log.intensityAfter}</span>
+          ${reduction > 0 ? `<span class="log-reduce-badge">−${reduction} 감소</span>` : ''}
+        ` : ''}
+        <div class="log-triggers">${triggers}</div>
+      </div>
+      ${log.situation ? `<div class="log-field"><span class="log-field-label">상황</span>${esc(log.situation)}</div>` : ''}
+      ${log.thought   ? `<div class="log-field log-thought">"${esc(log.thought)}"</div>` : ''}
+      ${log.action    ? `<div class="log-field log-action"><span class="log-field-label">행동</span>${esc(log.action)}</div>` : ''}
+      ${activities    ? `<div class="log-activities">${activities}</div>` : ''}
+      ${log.alternative ? `<div class="log-alt">→ ${esc(log.alternative)}</div>` : ''}
+      <button class="log-delete" data-id="${log.id}">×</button>
+    </div>`;
+  }).join('');
+
+  el.querySelectorAll('.log-delete').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (!confirm('이 기록을 삭제할까요?')) return;
+      logs = logs.filter(l => l.id !== Number(btn.dataset.id));
+      saveLogs(); renderHistory();
+    });
+  });
+}
+
+// ── Stats ──────────────────────────────────────────────────────────────────
+function getFilteredLogs(period) {
+  const now = new Date();
+  return logs.filter(l => {
+    const d = new Date(l.date);
+    if (period === 'day') {
+      return d.toDateString() === now.toDateString();
+    } else if (period === 'week') {
+      const startOfWeek = new Date(now);
+      startOfWeek.setDate(now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1));
+      startOfWeek.setHours(0,0,0,0);
+      return d >= startOfWeek;
+    } else if (period === 'month') {
+      return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+    }
+    return true; // all
+  });
+}
+
+function renderStats() {
+  const el = document.getElementById('stats-content');
+  const filtered = getFilteredLogs(currentPeriod);
+
+  const periodLabel = { day:'오늘', week:'이번 주', month:'이번 달', all:'전체' }[currentPeriod];
+
+  if (!filtered.length) {
+    el.innerHTML = `<div class="empty">${periodLabel} 기록이 없어요.<span>다른 기간을 선택해 보세요.</span></div>`;
+    return;
+  }
+
+  const avg = (filtered.reduce((s,l) => s + l.intensity, 0) / filtered.length).toFixed(1);
+  const maxVal = Math.max(...filtered.map(l => l.intensity));
+  const logsWithAfter = filtered.filter(l => l.intensityAfter != null);
+  const avgReduce = logsWithAfter.length
+    ? (logsWithAfter.reduce((s,l) => s + (l.intensity - l.intensityAfter), 0) / logsWithAfter.length).toFixed(1)
+    : null;
+
+  // trigger count
+  const trigCount = {};
+  filtered.forEach(l => (l.triggers||[]).forEach(t => { trigCount[t] = (trigCount[t]||0) + 1; }));
+  const topTrigs = Object.entries(trigCount).sort((a,b)=>b[1]-a[1]).slice(0,4);
+
+  // coping count
+  const copCount = {};
+  filtered.forEach(l => (l.copingActivities||[]).forEach(id => { copCount[id] = (copCount[id]||0) + 1; }));
+  const topCop = Object.entries(copCount).sort((a,b)=>b[1]-a[1]).slice(0,3);
+
+  const recent7 = filtered.slice(-7).reverse();
+
+  const trigBars = topTrigs.map(([name, cnt]) => `
+    <div class="bar-row">
+      <span class="bar-name">${esc(name)}</span>
+      <div class="bar-track"><div class="bar-fill" style="background:#E57373;width:${(cnt/filtered.length)*100}%"></div></div>
+      <span class="bar-count">${cnt}</span>
+    </div>`).join('');
+
+  const copBars = topCop.map(([id, cnt]) => {
+    const m = COPING_META[id]; if (!m) return '';
+    return `
+    <div class="bar-row">
+      <span style="font-size:18px;margin-right:4px">${m.icon}</span>
+      <span class="bar-name">${esc(m.name)}</span>
+      <div class="bar-track"><div class="bar-fill" style="background:#4FC3F7;width:${(cnt/filtered.length)*100}%"></div></div>
+      <span class="bar-count">${cnt}</span>
+    </div>`;
+  }).join('');
+
+  const chartCols = recent7.map(l => {
+    const h = Math.max(6, (l.intensity / 10) * 90);
+    const hA = l.intensityAfter != null ? Math.max(3, (l.intensityAfter / 10) * 90) : null;
+    const col = ANGER_COLORS[l.intensity];
+    const colA = l.intensityAfter != null ? ANGER_COLORS[l.intensityAfter] : null;
+    const labelBefore = `<span style="font-family:'DM Serif Display',serif;font-size:22px;color:${col};font-weight:700;line-height:1">${l.intensity}</span>`;
+    const labelAfter  = hA != null ? `<span style="font-family:'DM Serif Display',serif;font-size:19px;color:${colA};opacity:0.85;line-height:1">→${l.intensityAfter}</span>` : '';
+    return `
+    <div class="chart-col">
+      <div class="chart-bars-inner">
+        <div class="chart-bar" style="width:${hA?'45%':'80%'};height:${h}px;background:${col};opacity:0.85"></div>
+        ${hA ? `<div class="chart-bar" style="width:45%;height:${hA}px;background:${colA};opacity:0.6"></div>` : ''}
+      </div>
+      <div style="display:flex;gap:2px;align-items:baseline;margin-top:5px">${labelBefore}${labelAfter}</div>
+    </div>`;
+  }).join('');
+
+  el.innerHTML = `
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-val">${filtered.length}회</div><div class="stat-label">총 기록</div></div>
+      <div class="stat-card"><div class="stat-val">${avg}</div><div class="stat-label">평균 강도</div></div>
+      <div class="stat-card"><div class="stat-val">${maxVal}</div><div class="stat-label">최고 강도</div></div>
+      <div class="stat-card"><div class="stat-val">${avgReduce != null ? '−' + avgReduce : '—'}</div><div class="stat-label">평균 감소폭</div></div>
+    </div>
+    ${topTrigs.length ? `<div class="stats-block"><div class="stats-title">주요 트리거</div>${trigBars}</div>` : ''}
+    ${topCop.length   ? `<div class="stats-block"><div class="stats-title">자주 사용한 활동</div>${copBars}</div>` : ''}
+    <div class="stats-block">
+      <div class="stats-title">강도 변화 (활동 전 · 후)</div>
+      <div class="chart-bars" style="height:100px;align-items:flex-end">${chartCols}</div>
+      <div class="chart-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#EF5350;opacity:0.85"></div><span class="legend-text">활동 전</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#4FC3F7;opacity:0.6"></div><span class="legend-text">활동 후</span></div>
+      </div>
+    </div>`;
+}
+
+updateFeedback();
+
+// ── Period tab switching ────────────────────────────────────────────────────
+document.querySelectorAll('.period-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    currentPeriod = b.dataset.period;
+    document.querySelectorAll('.period-btn').forEach(x => x.classList.toggle('active', x === b));
+    renderStats();
+  });
+});
+
+// ── Coping activity detail panel ───────────────────────────────────────────
+function showCopingDetail(key) {
+  const m = COPING_META[key];
+  if (!m || !m.steps) return;
+  const stepsHTML = m.steps.map((s, i) => `
+    <li>
+      <div class="coping-step-num">${i + 1}</div>
+      <div class="coping-step-text">${esc(s)}</div>
+    </li>`).join('');
+
+  const overlay = document.createElement('div');
+  overlay.className = 'coping-detail-overlay';
+  overlay.innerHTML = `
+    <div class="coping-detail-panel">
+      <div class="coping-detail-icon">${m.icon}</div>
+      <div class="coping-detail-title">${esc(m.name)}</div>
+      <div class="coping-detail-subtitle">${esc(m.subtitle)}</div>
+      <ul class="coping-detail-steps">${stepsHTML}</ul>
+      ${m.tip ? `<div class="coping-detail-tip">💡 ${esc(m.tip)}</div>` : ''}
+      <button class="coping-detail-close">닫기</button>
+    </div>`;
+  document.body.appendChild(overlay);
+
+  const close = () => overlay.remove();
+  overlay.querySelector('.coping-detail-close').addEventListener('click', close);
+  overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+}
+
+// Remove the old coping-group click handler (replaced below with new one)
+// New combined handler: icon tap → detail, name/card area → toggle selection
+const copingGroup = document.getElementById('coping-group');
+
+// Long-press support
+let longPressTimer;
+copingGroup.addEventListener('pointerdown', e => {
+  const btn = e.target.closest('.coping-btn');
+  if (!btn) return;
+  longPressTimer = setTimeout(() => { showCopingDetail(btn.dataset.val); }, 600);
+});
+copingGroup.addEventListener('pointerup',    () => clearTimeout(longPressTimer));
+copingGroup.addEventListener('pointerleave', () => clearTimeout(longPressTimer));
+
+// ── Reset all logs ─────────────────────────────────────────────────────────
+document.getElementById('reset-btn').addEventListener('click', () => {
+  if (!confirm('모든 기록을 삭제할까요?\n이 작업은 되돌릴 수 없습니다.')) return;
+  logs = [];
+  saveLogs();
+  renderStats();
+  const btn = document.getElementById('reset-btn');
+  btn.textContent = '✓ 초기화 완료';
+  btn.style.borderColor = '#388E3C';
+  btn.style.color = '#388E3C';
+  setTimeout(() => { btn.textContent = '🗑️ 전체 기록 초기화'; btn.style.borderColor = ''; btn.style.color = ''; }, 2000);
+});
+</script>
+</body>
+</html>

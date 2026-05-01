@@ -99,6 +99,44 @@ textarea.text-field { resize:vertical; min-height:90px; line-height:1.6; }
 .cal-day.emp { background:transparent; border-color:transparent; }
 
 .danger-card { border-color:#fde8e8 !important; }
+
+/* ── 강도 가이드 모달 ── */
+.modal-overlay {
+  display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45);
+  z-index:1000; align-items:flex-end; justify-content:center;
+  backdrop-filter:blur(2px);
+}
+.modal-overlay.open { display:flex; }
+.modal-sheet {
+  background:#fff; border-radius:24px 24px 0 0; width:100%; max-width:480px;
+  padding:1.5rem 1.25rem 2.5rem; animation:slideUp .25s ease;
+  max-height:90vh; overflow-y:auto;
+}
+@keyframes slideUp { from { transform:translateY(60px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+.modal-handle { width:40px; height:4px; background:#ddd; border-radius:999px; margin:0 auto 1.25rem; }
+.modal-title { font-size:18px; font-weight:800; color:#1a1a1a; margin-bottom:4px; }
+.modal-sub   { font-size:14px; color:#999; margin-bottom:1.25rem; }
+.scale-item  { display:flex; gap:12px; align-items:flex-start; margin-bottom:0.875rem; }
+.scale-badge {
+  min-width:36px; height:36px; border-radius:50%; display:flex; align-items:center;
+  justify-content:center; font-size:15px; font-weight:800; flex-shrink:0; margin-top:1px;
+}
+.scale-info  { flex:1; }
+.scale-label { font-size:15px; font-weight:700; color:#1a1a1a; margin-bottom:2px; }
+.scale-desc  { font-size:14px; color:#777; line-height:1.55; }
+.scale-divider { border:none; border-top:1px solid #f0ede8; margin:0.25rem 0 1rem; }
+.modal-close-btn {
+  margin-top:1.25rem; width:100%; padding:14px; border-radius:12px;
+  background:#1D9E75; color:#fff; border:none; font-size:16px;
+  font-weight:700; font-family:inherit; cursor:pointer; touch-action:manipulation;
+}
+.int-help-btn {
+  width:22px; height:22px; border-radius:50%; border:1.5px solid #9FE1CB;
+  background:#E1F5EE; color:#0F6E56; font-size:13px; font-weight:800;
+  cursor:pointer; font-family:inherit; line-height:1; display:inline-flex;
+  align-items:center; justify-content:center; margin-left:6px;
+  touch-action:manipulation; vertical-align:middle; flex-shrink:0;
+}
 </style>
 </head>
 <body>
@@ -188,7 +226,10 @@ textarea.text-field { resize:vertical; min-height:90px; line-height:1.6; }
         <button class="emo-btn">기쁨</button><button class="emo-btn">편안함</button>
         <button class="emo-btn">무감각</button><button class="emo-btn">혼란</button>
       </div>
-      <div class="field-label">감정의 강도 (1 = 약함 · 7 = 매우 강함)</div>
+      <div class="field-label" style="display:flex;align-items:center;">
+        감정의 강도 (1 = 약함 · 7 = 매우 강함)
+        <button class="int-help-btn" id="int-help-btn" title="강도 척도 안내">?</button>
+      </div>
       <div class="int-row">
         <button class="int-dot" data-v="1">1</button>
         <button class="int-dot" data-v="2">2</button>
@@ -261,6 +302,84 @@ textarea.text-field { resize:vertical; min-height:90px; line-height:1.6; }
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- 강도 척도 안내 모달 -->
+<div class="modal-overlay" id="int-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">감정 강도 7점 척도</div>
+    <div class="modal-sub">각 숫자가 어느 정도의 감정 상태를 나타내는지 참고하세요</div>
+
+    <div class="scale-item">
+      <div class="scale-badge" style="background:#E8F8F3;color:#1D9E75;">1</div>
+      <div class="scale-info">
+        <div class="scale-label">거의 느껴지지 않음</div>
+        <div class="scale-desc">감정이 있는 것 같기는 한데 매우 희미해요. 일상생활에 전혀 영향이 없어요.</div>
+      </div>
+    </div>
+    <hr class="scale-divider">
+
+    <div class="scale-item">
+      <div class="scale-badge" style="background:#D4F4E7;color:#0F6E56;">2</div>
+      <div class="scale-info">
+        <div class="scale-label">약하게 느껴짐</div>
+        <div class="scale-desc">감정이 가볍게 존재해요. 집중하면 알아챌 수 있지만 대부분 괜찮아요.</div>
+      </div>
+    </div>
+    <hr class="scale-divider">
+
+    <div class="scale-item">
+      <div class="scale-badge" style="background:#FEF9E5;color:#B07D00;">3</div>
+      <div class="scale-info">
+        <div class="scale-label">보통 — 신경이 쓰임</div>
+        <div class="scale-desc">감정이 꽤 느껴지고 가끔 생각이 떠올라요. 그래도 하던 일은 계속할 수 있어요.</div>
+      </div>
+    </div>
+    <hr class="scale-divider">
+
+    <div class="scale-item">
+      <div class="scale-badge" style="background:#FAEEDA;color:#A0540A;">4</div>
+      <div class="scale-info">
+        <div class="scale-label">중간 — 집중에 영향을 줌</div>
+        <div class="scale-desc">감정이 분명히 존재하고 생각이 자꾸 그쪽으로 가요. 몸에서도 약간 느껴져요.</div>
+      </div>
+    </div>
+    <hr class="scale-divider">
+
+    <div class="scale-item">
+      <div class="scale-badge" style="background:#FAEDE0;color:#C0521A;">5</div>
+      <div class="scale-info">
+        <div class="scale-label">강함 — 일상이 어려워짐</div>
+        <div class="scale-desc">감정이 크게 느껴지고 다른 것에 집중하기가 힘들어요. 몸도 분명히 반응하고 있어요.</div>
+      </div>
+    </div>
+    <hr class="scale-divider">
+
+    <div class="scale-item">
+      <div class="scale-badge" style="background:#FAE0E0;color:#C03030;">6</div>
+      <div class="scale-info">
+        <div class="scale-label">매우 강함 — 압도되는 느낌</div>
+        <div class="scale-desc">감정에 거의 휩쓸려 있어요. 생각하거나 행동하기가 매우 어렵고 몸도 힘들어요.</div>
+      </div>
+    </div>
+    <hr class="scale-divider">
+
+    <div class="scale-item">
+      <div class="scale-badge" style="background:#F5D0D0;color:#A01010;">7</div>
+      <div class="scale-info">
+        <div class="scale-label">극도로 강함 — 한계 상황</div>
+        <div class="scale-desc">지금까지 느껴본 가장 강렬한 수준이에요. 이 감정에 완전히 압도되어 있고, 안전이 걱정될 수도 있어요. 가능하면 주변에 도움을 요청해 보세요.</div>
+      </div>
+    </div>
+
+    <div style="background:#F6F5F2;border-radius:10px;padding:0.875rem 1rem;margin-top:0.5rem;">
+      <div style="font-size:13px;font-weight:700;color:#0F6E56;margin-bottom:4px;">💡 DBT 팁</div>
+      <div style="font-size:14px;color:#555;line-height:1.6;">숫자가 맞는지 너무 고민하지 않아도 돼요. 지금 이 순간 가장 가깝다고 느껴지는 숫자를 고르면 충분해요.</div>
+    </div>
+
+    <button class="modal-close-btn" id="int-modal-close">확인했어요</button>
   </div>
 </div>
 
@@ -604,6 +723,17 @@ window.addEventListener('load', function() {
     el('stats-all').innerHTML = statsHTML(entries);
     el('list-all').innerHTML  = listHTML(entries, true);
   }
+
+  /* ── 강도 척도 모달 ── */
+  el('int-help-btn').addEventListener('click', function() {
+    el('int-modal').classList.add('open');
+  });
+  el('int-modal-close').addEventListener('click', function() {
+    el('int-modal').classList.remove('open');
+  });
+  el('int-modal').addEventListener('click', function(e) {
+    if (e.target === el('int-modal')) el('int-modal').classList.remove('open');
+  });
 
   /* ── 초기 실행 ── */
   drawTimer();

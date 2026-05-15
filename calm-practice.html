@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="차분히 지금 여기로"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<title>차분히 지금 여기로</title>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{margin:0;padding:0;background:#f5f7fa;font-family:'Noto Sans KR','Apple SD Gothic Neo',sans-serif;}
+  button{font-family:inherit;}
+  textarea{font-family:inherit;}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+const T = {
+  bg:"#f5f7fa", surface:"#ffffff", card:"#ffffff", cardAlt:"#f0f4ff",
+  border:"#dde3f0", accent:"#3b82f6", teal:"#0d9488", violet:"#7c3aed",
+  warn:"#d97706", danger:"#dc2626", green:"#16a34a", cold:"#0284c7",
+  text:"#1e293b", muted:"#64748b", dim:"#cbd5e1",
+  shadow:"0 2px 12px rgba(0,0,0,0.08)",
+};
+
+const TECHNIQUES = [
+  {
+    id:"478", title:"4-7-8 호흡법", sub:"이완 유도 호흡", icon:"🌬️", color:T.accent,
+    phases:[{label:"들숨",sec:4,color:T.accent},{label:"멈춤",sec:7,color:T.teal},{label:"날숨",sec:8,color:T.violet}],
+    cycles:4,
+    why:"과호흡으로 무너진 산소·이산화탄소 균형을 빠르게 회복시킵니다. 부교감신경을 자극해 심박수와 혈압을 낮추고, 손발 저림·어지럼증을 완화합니다.",
+    steps:["혀끝을 윗니 뒤 입천장에 가볍게 댑니다.","코로 4초 들이쉽니다.","7초 동안 숨을 멈춥니다.","입으로 '후우' 소리와 함께 8초 내쉽니다.","4회 반복이 한 세트입니다."],
+  },
+  {
+    id:"box", title:"박스 호흡법", sub:"균형 4·4·4·4 리듬", icon:"⬜", color:T.teal,
+    phases:[{label:"들숨",sec:4,color:T.accent},{label:"멈춤",sec:4,color:T.teal},{label:"날숨",sec:4,color:T.violet},{label:"멈춤",sec:4,color:T.warn}],
+    cycles:5,
+    why:"균등한 4박자 리듬이 자율신경계 균형을 빠르게 회복시킵니다. 미 해군 특수부대가 전투 스트레스 관리에 사용하는 검증된 기법입니다.",
+    steps:["편안한 자세로 앉거나 눕습니다.","코로 4초 들이쉽니다.","4초 멈춥니다.","입으로 4초 내쉽니다.","다시 4초 멈춥니다.","이 패턴을 5–6회 반복합니다."],
+  },
+  {
+    id:"pmr", title:"점진적 근육 이완", sub:"긴장-이완 순환", icon:"💪", color:T.violet,
+    muscleGroups:["두 손·전완","윗팔·어깨","이마·두피","눈·코","턱·목","가슴·복부","허벅지·종아리","발·발가락"],
+    tenseSec:7, relaxSec:15,
+    why:"근육 긴장은 불안의 신체적 표현이자 원인입니다. 의도적 긴장-이완을 반복하면 근육이 이완 상태를 학습하고 자율신경계가 안정됩니다.",
+    steps:["조용한 곳에 편안하게 눕거나 앉습니다.","각 부위를 7초 강하게 긴장시킵니다.","힘을 한꺼번에 빼고 15초 이완감을 느낍니다.","긴장과 이완의 대비에 주의를 집중합니다."],
+  },
+  {
+    id:"54321", title:"5-4-3-2-1 그라운딩", sub:"현재 감각으로 귀환", icon:"🌿", color:T.green,
+    senses:[{n:5,label:"볼 수 있는 것",icon:"👁️"},{n:4,label:"만질 수 있는 것",icon:"✋"},{n:3,label:"들을 수 있는 것",icon:"👂"},{n:2,label:"냄새 맡을 수 있는 것",icon:"👃"},{n:1,label:"맛볼 수 있는 것",icon:"👅"}],
+    why:"공황 시 주의는 내부 신체 감각으로 과도하게 쏠립니다. 외부 환경의 구체적 감각으로 주의를 분산시키면 편도체 과활성이 완화됩니다.",
+    steps:["주변을 천천히 둘러봅니다.","각 감각 범주에서 해당 개수만큼 찾아 마음속으로 말합니다.","각 대상에 2–3초 동안 주의를 머뭅니다.","이인감·비현실감이 느껴질 때 특히 효과적입니다."],
+  },
+  {
+    id:"cold", title:"냉수 다이브 반사", sub:"미주신경 즉각 자극", icon:"🧊", color:T.cold,
+    why:"포유류 다이브 반사: 찬물이 얼굴에 닿으면 미주신경이 자극되어 심박수가 10–25% 즉각 감소합니다. DBT의 TIPP 기술 중 가장 빠른 생리적 개입입니다.",
+    steps:["찬물을 그릇이나 세면대에 받습니다.","숨을 크게 들이쉰 뒤 얼굴을 30초간 담급니다.","어렵다면 손목·목에 냉수 수건을 댑니다.","심박수가 빠르게 내려가는 것을 느낍니다."],
+    caution:"심장 질환·고혈압이 있다면 의사와 먼저 상담하세요.",
+  },
+];
+
+const SIGNS = [
+  "심장이 빠르게 뛰거나 두근거린다","가슴이 답답하거나 조이는 느낌이 든다",
+  "숨쉬기가 갑자기 어렵게 느껴진다","손발이 저리거나 떨린다",
+  "어지럽거나 현기증이 난다","식은땀이 갑자기 난다",
+  "주변이 비현실적으로 느껴진다","죽거나 기절할 것 같은 두려움이 든다",
+];
+const MOOD_LABELS    = ["매우 나쁨 😞","나쁨 😕","보통 😐","좋음 🙂","매우 좋음 😊"];
+const ANXIETY_LABELS = ["없음 😌","약간 😶","보통 😟","심함 😰","극심함 😱"];
+const WEEK_LABELS    = ["월","화","수","목","금","토","일"];
+
+const LS = "panic_app_v1";
+function loadData(){ try{ return JSON.parse(localStorage.getItem(LS))||{sessions:[]}; }catch{ return {sessions:[]}; } }
+function saveData(d){ try{ localStorage.setItem(LS,JSON.stringify(d)); }catch{} }
+
+function useWakeLock(){
+  const ref=useRef(null);
+  const acquire=useCallback(async()=>{ if("wakeLock"in navigator) try{ ref.current=await navigator.wakeLock.request("screen"); }catch{} },[]);
+  const release=useCallback(()=>{ if(ref.current){ ref.current.release(); ref.current=null; } },[]);
+  return {acquire,release};
+}
+
+const S={
+  page:  {minHeight:"100vh",background:T.bg,color:T.text,fontFamily:"'Noto Sans KR','Apple SD Gothic Neo',sans-serif",paddingBottom:80},
+  hdr:   {padding:"20px 20px 0",display:"flex",alignItems:"center",gap:12},
+  back:  {background:"none",border:"none",color:T.muted,fontSize:22,cursor:"pointer",padding:4,lineHeight:1},
+  ttl:   {fontSize:20,fontWeight:700,color:T.text,margin:0},
+  card:  {background:T.card,border:`1px solid ${T.border}`,borderRadius:16,padding:"18px 20px",marginBottom:12,boxShadow:T.shadow},
+  lbl:   {fontSize:11,color:T.muted,textTransform:"uppercase",letterSpacing:1.2,marginBottom:8,fontWeight:700},
+  btn:   c=>({background:c||T.accent,color:"#fff",border:"none",borderRadius:14,padding:"15px 24px",fontSize:15,fontWeight:700,cursor:"pointer",width:"100%",marginTop:8}),
+  ghost: {background:"none",border:`1.5px solid ${T.border}`,color:T.text,borderRadius:14,padding:"13px 24px",fontSize:14,cursor:"pointer",width:"100%",marginTop:8},
+};
+
+/* ── TIMER ENGINE ── */
+function usePhaseTimer({ phases, cycles, onFinish }){
+  const [display,setDisplay]=useState({pi:0,cycle:1,elapsed:0,done:false});
+  const [paused,setPaused]=useState(false);
+  const eng=useRef({pi:0,cycle:1,startTime:null,pausedElapsed:0});
+  const pausedRef=useRef(false);
+  const onFinishRef=useRef(onFinish);
+  useEffect(()=>{ onFinishRef.current=onFinish; },[onFinish]);
+
+  useEffect(()=>{
+    eng.current={pi:0,cycle:1,startTime:Date.now(),pausedElapsed:0};
+    pausedRef.current=false;
+    const id=setInterval(()=>{
+      if(pausedRef.current) return;
+      const e=eng.current;
+      if(e.startTime===null) return;
+      const elapsed=(Date.now()-e.startTime)/1000;
+      const phaseSec=phases[e.pi].sec;
+      if(elapsed>=phaseSec){
+        const nextPi=e.pi+1;
+        if(nextPi>=phases.length){
+          const nextCycle=e.cycle+1;
+          if(nextCycle>cycles){
+            e.startTime=null;
+            setDisplay({pi:e.pi,cycle:e.cycle,elapsed:phaseSec,done:true});
+            clearInterval(id);
+            setTimeout(()=>onFinishRef.current(),50);
+            return;
+          }
+          e.cycle=nextCycle; e.pi=0;
+        } else { e.pi=nextPi; }
+        e.startTime=Date.now(); e.pausedElapsed=0;
+        setDisplay({pi:e.pi,cycle:e.cycle,elapsed:0,done:false});
+      } else {
+        setDisplay({pi:e.pi,cycle:e.cycle,elapsed,done:false});
+      }
+    },80);
+    return ()=>clearInterval(id);
+  },[]);
+
+  const togglePause=useCallback(()=>{
+    setPaused(p=>{
+      const next=!p;
+      pausedRef.current=next;
+      if(next){
+        if(eng.current.startTime!==null){
+          eng.current.pausedElapsed=(Date.now()-eng.current.startTime)/1000;
+          eng.current.startTime=null;
+        }
+      } else {
+        eng.current.startTime=Date.now()-eng.current.pausedElapsed*1000;
+      }
+      return next;
+    });
+  },[]);
+
+  return {display,paused,togglePause};
+}
+
+/* ── BOX BREATH PLAYER ── */
+function BoxBreathPlayer({onDone}){
+  const tech=TECHNIQUES.find(t=>t.id==="box");
+  const phases=tech.phases; const CYCLES=tech.cycles;
+  const {acquire,release}=useWakeLock();
+  useEffect(()=>{ acquire(); return ()=>release(); },[]);
+  const [finished,setFinished]=useState(false);
+  const {display,paused,togglePause}=usePhaseTimer({phases,cycles:CYCLES,onFinish:()=>setFinished(true)});
+  const {pi,cycle,elapsed}=display;
+  const phase=phases[pi];
+  const progress=Math.min(elapsed/phase.sec,1);
+  const remaining=Math.max(Math.ceil(phase.sec-elapsed),0);
+  const CX=130,CY=130,HALF=90;
+  const corners=[{x:CX-HALF,y:CY-HALF},{x:CX+HALF,y:CY-HALF},{x:CX+HALF,y:CY+HALF},{x:CX-HALF,y:CY+HALF}];
+  const segS=corners[pi]; const segE=corners[(pi+1)%4];
+  const dotX=segS.x+(segE.x-segS.x)*progress;
+  const dotY=segS.y+(segE.y-segS.y)*progress;
+  const phaseColors=[T.accent,T.teal,T.violet,T.warn];
+
+  if(finished) return(
+    <div style={{...S.page,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:"100vh"}}>
+      <div style={{fontSize:64,marginBottom:16}}>✨</div>
+      <div style={{fontSize:22,fontWeight:800,color:T.teal,marginBottom:8}}>완료!</div>
+      <p style={{color:T.muted,fontSize:14}}>{CYCLES}회 완료했습니다.</p>
+      <button style={{...S.btn(T.teal),maxWidth:280,marginTop:24}} onClick={onDone}>돌아가기</button>
+    </div>
+  );
+  return(
+    <div style={{...S.page,display:"flex",flexDirection:"column",alignItems:"center",paddingTop:36,paddingBottom:40}}>
+      <button style={{...S.back,alignSelf:"flex-start",marginLeft:20,marginBottom:12}} onClick={()=>{release();onDone();}}>← 나가기</button>
+      <div style={{fontSize:16,fontWeight:700,color:T.muted}}>박스 호흡법</div>
+      <div style={{fontSize:12,color:T.dim,marginBottom:16}}>사이클 {cycle} / {CYCLES}</div>
+      <svg width={260} height={260} style={{overflow:"visible"}}>
+        <rect x={CX-HALF} y={CY-HALF} width={HALF*2} height={HALF*2} fill="none" stroke={T.border} strokeWidth={3} rx={6}/>
+        {Array.from({length:pi}).map((_,i)=>(
+          <line key={i} x1={corners[i].x} y1={corners[i].y} x2={corners[(i+1)%4].x} y2={corners[(i+1)%4].y} stroke={phaseColors[i]} strokeWidth={4} strokeLinecap="round"/>
+        ))}
+        <line x1={segS.x} y1={segS.y} x2={dotX} y2={dotY} stroke={phase.color} strokeWidth={4} strokeLinecap="round"/>
+        <circle cx={dotX} cy={dotY} r={11} fill={phase.color}/>
+        <text x={CX} y={CY-HALF-16} textAnchor="middle" fill={pi===0?phases[0].color:T.dim} fontSize={12} fontWeight={700}>들숨 4s</text>
+        <text x={CX+HALF+16} y={CY+5} textAnchor="start" fill={pi===1?phases[1].color:T.dim} fontSize={12} fontWeight={700}>멈춤 4s</text>
+        <text x={CX} y={CY+HALF+24} textAnchor="middle" fill={pi===2?phases[2].color:T.dim} fontSize={12} fontWeight={700}>날숨 4s</text>
+        <text x={CX-HALF-16} y={CY+5} textAnchor="end" fill={pi===3?phases[3].color:T.dim} fontSize={12} fontWeight={700}>멈춤 4s</text>
+        <text x={CX} y={CY-8} textAnchor="middle" fill={phase.color} fontSize={40} fontWeight={900}>{remaining}</text>
+        <text x={CX} y={CY+22} textAnchor="middle" fill={T.text} fontSize={16} fontWeight={700}>{phase.label}</text>
+      </svg>
+      <div style={{display:"flex",gap:8,marginTop:16,flexWrap:"wrap",justifyContent:"center",padding:"0 20px"}}>
+        {phases.map((p,i)=>(
+          <div key={i} style={{padding:"6px 14px",borderRadius:20,background:i===pi?p.color:T.bg,border:`1.5px solid ${i===pi?p.color:T.border}`,fontSize:12,color:i===pi?"#fff":T.muted,fontWeight:700}}>
+            {p.label} {p.sec}s
+          </div>
+        ))}
+      </div>
+      <button onClick={togglePause} style={{marginTop:24,background:T.bg,border:`1.5px solid ${T.border}`,color:T.text,borderRadius:12,padding:"10px 28px",fontSize:14,cursor:"pointer"}}>
+        {paused?"▶ 재개":"⏸ 일시정지"}
+      </button>
+    </div>
+  );
+}
+
+/* ── 478 BREATH PLAYER ── */
+function BreathPlayer({phases,cycles,title,onDone}){
+  const {acquire,release}=useWakeLock();
+  useEffect(()=>{ acquire(); return ()=>release(); },[]);
+  const [finished,setFinished]=useState(false);
+  const {display,paused,togglePause}=usePhaseTimer({phases,cycles,onFinish:()=>setFinished(true)});
+  const {pi,cycle,elapsed}=display;
+  const phase=phases[pi];
+  const r=88,circ=2*Math.PI*r;
+  const dash=circ*(1-Math.min(elapsed/phase.sec,1));
+  const remaining=Math.max(Math.ceil(phase.sec-elapsed),0);
+
+  if(finished) return(
+    <div style={{...S.page,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:"100vh"}}>
+      <div style={{fontSize:64,marginBottom:16}}>✨</div>
+      <div style={{fontSize:22,fontWeight:800,color:T.teal,marginBottom:8}}>완료!</div>
+      <p style={{color:T.muted,fontSize:14}}>{cycles}회 완료했습니다.</p>
+      <button style={{...S.btn(T.teal),maxWidth:280,marginTop:24}} onClick={onDone}>돌아가기</button>
+    </div>
+  );
+  return(
+    <div style={{...S.page,display:"flex",flexDirection:"column",alignItems:"center",paddingTop:40,paddingBottom:40}}>
+      <button style={{...S.back,alignSelf:"flex-start",marginLeft:20,marginBottom:16}} onClick={()=>{release();onDone();}}>← 나가기</button>
+      <div style={{fontSize:16,fontWeight:700,color:T.muted}}>{title}</div>
+      <div style={{fontSize:12,color:T.dim,marginBottom:28}}>사이클 {cycle} / {cycles}</div>
+      <svg width={210} height={210}>
+        <circle cx={105} cy={105} r={r} fill="none" stroke={T.border} strokeWidth={7}/>
+        <circle cx={105} cy={105} r={r} fill="none" stroke={phase.color} strokeWidth={7}
+          strokeDasharray={circ} strokeDashoffset={dash} strokeLinecap="round"
+          style={{transform:"rotate(-90deg)",transformOrigin:"105px 105px",transition:"stroke-dashoffset 0.08s linear,stroke 0.4s"}}/>
+        <text x={105} y={96} textAnchor="middle" fill={phase.color} fontSize={40} fontWeight={900}>{remaining}</text>
+        <text x={105} y={128} textAnchor="middle" fill={T.text} fontSize={17} fontWeight={700}>{phase.label}</text>
+      </svg>
+      <div style={{display:"flex",gap:8,marginTop:24,flexWrap:"wrap",justifyContent:"center",padding:"0 20px"}}>
+        {phases.map((p,i)=>(
+          <div key={i} style={{padding:"6px 14px",borderRadius:20,background:i===pi?p.color:T.bg,border:`1.5px solid ${i===pi?p.color:T.border}`,fontSize:12,color:i===pi?"#fff":T.muted,fontWeight:700}}>
+            {p.label} {p.sec}s
+          </div>
+        ))}
+      </div>
+      <button onClick={togglePause} style={{marginTop:28,background:T.bg,border:`1.5px solid ${T.border}`,color:T.text,borderRadius:12,padding:"10px 28px",fontSize:14,cursor:"pointer"}}>
+        {paused?"▶ 재개":"⏸ 일시정지"}
+      </button>
+    </div>
+  );
+}
+
+/* ── PMR PLAYER ── */
+function PMRPlayer({tech,onDone}){
+  const {acquire,release}=useWakeLock();
+  useEffect(()=>{ acquire(); return ()=>release(); },[]);
+  const phases=tech.muscleGroups.flatMap(g=>[
+    {label:`${g} — 긴장 💢`,sec:tech.tenseSec,color:T.danger,group:g,kind:"tense"},
+    {label:`${g} — 이완 😌`,sec:tech.relaxSec,color:T.violet,group:g,kind:"relax"},
+  ]);
+  const [finished,setFinished]=useState(false);
+  const {display,paused,togglePause}=usePhaseTimer({phases,cycles:1,onFinish:()=>setFinished(true)});
+  const {pi,elapsed}=display;
+  const phase=phases[pi];
+  const progress=Math.min(elapsed/phase.sec,1);
+  const remaining=Math.max(Math.ceil(phase.sec-elapsed),0);
+  const isTense=phase.kind==="tense";
+  const groupIdx=Math.floor(pi/2);
+
+  if(finished) return(
+    <div style={{...S.page,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:"100vh"}}>
+      <div style={{fontSize:64,marginBottom:16}}>💜</div>
+      <div style={{fontSize:22,fontWeight:800,color:T.violet,marginBottom:8}}>완료!</div>
+      <p style={{color:T.muted,fontSize:14}}>모든 근육군 이완 완료</p>
+      <button style={{...S.btn(T.violet),maxWidth:280,marginTop:24}} onClick={onDone}>돌아가기</button>
+    </div>
+  );
+  return(
+    <div style={{...S.page,display:"flex",flexDirection:"column",alignItems:"center",paddingTop:40}}>
+      <button style={{...S.back,alignSelf:"flex-start",marginLeft:20,marginBottom:16}} onClick={()=>{release();onDone();}}>← 나가기</button>
+      <div style={{fontSize:14,color:T.muted,marginBottom:4}}>점진적 근육 이완</div>
+      <div style={{fontSize:22,fontWeight:800,color:isTense?T.danger:T.violet,marginBottom:28}}>{phase.group}</div>
+      <div style={{width:180,height:180,borderRadius:"50%",border:`7px solid ${T.border}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",position:"relative",overflow:"hidden",background:T.bg}}>
+        <div style={{position:"absolute",bottom:0,left:0,right:0,height:`${progress*100}%`,background:isTense?`${T.danger}22`:`${T.violet}22`,transition:"height 0.08s linear"}}/>
+        <div style={{fontSize:36,fontWeight:900,color:isTense?T.danger:T.violet}}>{remaining}</div>
+        <div style={{fontSize:15,fontWeight:700,color:isTense?T.danger:T.violet}}>{isTense?"긴장 💢":"이완 😌"}</div>
+      </div>
+      <div style={{display:"flex",gap:6,marginTop:24,flexWrap:"wrap",justifyContent:"center",maxWidth:320,padding:"0 20px"}}>
+        {tech.muscleGroups.map((g,i)=>(
+          <div key={i} style={{fontSize:11,padding:"4px 10px",borderRadius:20,background:i<groupIdx?`${T.violet}33`:i===groupIdx?T.violet:T.bg,color:i<=groupIdx?"#fff":T.muted,border:`1px solid ${i<=groupIdx?T.violet:T.border}`}}>{g}</div>
+        ))}
+      </div>
+      <div style={{marginTop:8,fontSize:12,color:T.muted}}>{groupIdx+1} / {tech.muscleGroups.length}</div>
+      <button onClick={togglePause} style={{marginTop:20,background:T.bg,border:`1.5px solid ${T.border}`,color:T.text,borderRadius:12,padding:"10px 28px",fontSize:14,cursor:"pointer"}}>
+        {paused?"▶ 재개":"⏸ 일시정지"}
+      </button>
+    </div>
+  );
+}
+
+/* ── GROUNDING PLAYER ── */
+function GroundingPlayer({tech,onDone}){
+  const [idx,setIdx]=useState(0);
+  const fin=idx>=tech.senses.length;
+  return(
+    <div style={S.page}>
+      <div style={S.hdr}><button style={S.back} onClick={onDone}>← 나가기</button><h2 style={S.ttl}>5-4-3-2-1 그라운딩</h2></div>
+      <div style={{padding:"24px 20px"}}>
+        {fin?(
+          <div style={{textAlign:"center",paddingTop:40}}>
+            <div style={{fontSize:64,marginBottom:16}}>🌿</div>
+            <div style={{fontSize:22,fontWeight:800,color:T.green,marginBottom:8}}>완료!</div>
+            <p style={{color:T.muted}}>주의가 현재 순간으로 돌아왔습니다.</p>
+            <button style={{...S.btn(T.green),maxWidth:280,margin:"24px auto 0"}} onClick={onDone}>돌아가기</button>
+          </div>
+        ):(
+          <>
+            <div style={{textAlign:"center",marginBottom:32}}>
+              <div style={{fontSize:64}}>{tech.senses[idx].icon}</div>
+              <div style={{fontSize:52,fontWeight:900,color:T.green,margin:"8px 0 4px"}}>{tech.senses[idx].n}</div>
+              <div style={{fontSize:20,color:T.text}}>{tech.senses[idx].label}</div>
+              <div style={{fontSize:13,color:T.muted,marginTop:8}}>찾아서 마음속으로 말해보세요</div>
+            </div>
+            <div style={{display:"flex",gap:6,marginBottom:24}}>
+              {tech.senses.map((_,i)=><div key={i} style={{flex:1,height:5,borderRadius:3,background:i<=idx?T.green:T.dim}}/>)}
+            </div>
+            <button style={S.btn(T.green)} onClick={()=>setIdx(i=>i+1)}>{idx<tech.senses.length-1?"다음 →":"완료"}</button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ── HOME ── */
+function HomeScreen({onNav,data}){
+  const today=new Date(); const todayStr=today.toISOString().slice(0,10);
+  const dow=today.getDay(); const monOffset=dow===0?-6:1-dow;
+  const weekDays=Array.from({length:7},(_,i)=>{ const d=new Date(today); d.setDate(today.getDate()+monOffset+i); return d.toISOString().slice(0,10); });
+  const cntDay=ds=>data.sessions.filter(s=>s.date.startsWith(ds)).length;
+  return(
+    <div style={S.page}>
+      <div style={{background:"linear-gradient(135deg,#eff6ff 0%,#f0fdf4 100%)",padding:"44px 24px 28px",borderBottom:`1px solid ${T.border}`}}>
+        <div style={{fontSize:11,color:T.teal,fontWeight:800,letterSpacing:2.5,marginBottom:10}}>CALM PRACTICE</div>
+        <h1 style={{fontSize:26,fontWeight:900,margin:"0 0 8px",lineHeight:1.35,color:T.text}}>
+          호흡과 진정 연습<br/>
+          <span style={{fontSize:20,fontWeight:600,color:T.teal}}>차분히 지금 여기로</span>
+        </h1>
+        <p style={{color:T.muted,fontSize:14,margin:"0 0 20px",lineHeight:1.75}}>매일 조금씩 연습하면, 몸이 먼저 기억하고 반응합니다.</p>
+        <div style={{background:"#fff",borderRadius:16,padding:"16px 18px",border:`1px solid ${T.border}`,boxShadow:T.shadow}}>
+          <div style={{fontSize:11,color:T.muted,fontWeight:700,letterSpacing:1,marginBottom:12}}>이번 주 연습 현황</div>
+          <div style={{display:"flex",gap:4,justifyContent:"space-between"}}>
+            {weekDays.map((d,i)=>{
+              const cnt=cntDay(d); const isToday=d===todayStr; const isFuture=d>todayStr;
+              return(
+                <div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:6}}>
+                  <div style={{fontSize:11,color:isToday?T.accent:T.muted,fontWeight:isToday?800:400}}>{WEEK_LABELS[i]}</div>
+                  <div style={{width:32,height:32,borderRadius:"50%",background:isFuture?T.bg:cnt>0?T.accent:T.dim,border:isToday?`2.5px solid ${T.accent}`:`1.5px solid ${T.border}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,color:cnt>0&&!isFuture?"#fff":T.muted}}>
+                    {!isFuture&&cnt>0?cnt:""}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+      <div style={{padding:"20px 20px 0"}}>
+        <div style={{background:"#fff5f5",border:`1.5px solid ${T.danger}44`,borderRadius:16,padding:"14px 18px",marginBottom:18,boxShadow:T.shadow}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+            <div>
+              <div style={{fontSize:13,color:T.danger,fontWeight:800,marginBottom:3}}>⚡ 지금 증상이 느껴진다면</div>
+              <div style={{fontSize:12,color:T.muted}}>빠른 대처 가이드로 이동합니다</div>
+            </div>
+            <button onClick={()=>onNav("emergency")} style={{background:T.danger,color:"#fff",border:"none",borderRadius:10,padding:"10px 16px",fontSize:13,fontWeight:700,cursor:"pointer",whiteSpace:"nowrap",flexShrink:0,marginLeft:12}}>지금 →</button>
+          </div>
+        </div>
+        <div style={{fontSize:11,color:T.muted,fontWeight:700,letterSpacing:1.2,marginBottom:10}}>MENU</div>
+        <button onClick={()=>onNav("session")} style={S.btn(T.accent)}>🧘 연습 세션 시작</button>
+        <button onClick={()=>onNav("log")} style={S.ghost}>📋 연습 기록 보기</button>
+        <button onClick={()=>onNav("info")} style={S.ghost}>ℹ️ 앱 소개 및 유의사항</button>
+      </div>
+    </div>
+  );
+}
+
+/* ── INFO ── */
+function InfoScreen({onBack}){
+  return(
+    <div style={S.page}>
+      <div style={S.hdr}><button style={S.back} onClick={onBack}>←</button><h2 style={S.ttl}>앱 소개 및 유의사항</h2></div>
+      <div style={{padding:"20px 20px 0"}}>
+        <div style={{...S.card,borderColor:`${T.warn}66`,background:"#fffbeb"}}>
+          <div style={{fontSize:15,fontWeight:800,color:T.warn,marginBottom:10}}>⚠️ 이 앱은 심리치료를 대체하지 않습니다</div>
+          <p style={{fontSize:14,color:T.text,lineHeight:1.8,margin:"0 0 10px"}}>이 앱은 공황 대처 기술의 <strong>자기 훈련 보조 도구</strong>입니다. 공황장애·불안장애의 치료는 반드시 정신건강의학과 전문의 또는 자격 있는 심리상담사와 함께 진행되어야 합니다.</p>
+          <p style={{fontSize:14,color:T.warn,lineHeight:1.8,margin:0}}>증상이 심하거나 일상이 어렵다면 지금 바로 전문가에게 연락하세요.</p>
+        </div>
+        <div style={S.card}>
+          <div style={{fontSize:15,fontWeight:800,color:T.accent,marginBottom:10}}>🎯 왜 매일 연습하는가</div>
+          <p style={{fontSize:14,color:T.text,lineHeight:1.8,margin:0}}>공황이 시작될 때 새로운 기술을 배우는 것은 불가능합니다. 편도체가 활성화되면 전전두엽의 판단 능력이 크게 저하되기 때문입니다.<br/><br/><strong>평소에 몸에 익힌 기술</strong>은 극도의 각성 상태에서도 절차 기억으로 접근할 수 있습니다. 매일 5–10분의 연습이 실제 공황 상황에서의 대처 능력을 결정합니다.</p>
+        </div>
+        <div style={S.card}>
+          <div style={{fontSize:15,fontWeight:800,color:T.teal,marginBottom:10}}>🔔 공황의 조짐 — 언제 대처를 시작할까</div>
+          <p style={{fontSize:13,color:T.muted,lineHeight:1.7,margin:"0 0 10px"}}>아래 증상 중 2개 이상이 갑자기 나타나면 대처를 시작하세요:</p>
+          {SIGNS.map((s,i)=><div key={i} style={{display:"flex",gap:8,marginBottom:7}}><span style={{color:T.teal}}>•</span><span style={{fontSize:13,color:T.text,lineHeight:1.6}}>{s}</span></div>)}
+        </div>
+        <div style={{...S.card,borderColor:T.dim}}>
+          <div style={{fontSize:15,fontWeight:800,color:T.muted,marginBottom:10}}>🔒 개인정보 & 데이터</div>
+          <p style={{fontSize:14,color:T.muted,lineHeight:1.8,margin:0}}>모든 기록은 <strong style={{color:T.text}}>이 기기의 로컬 저장소에만</strong> 보관됩니다. 서버로 전송되거나 제3자와 공유되지 않습니다.</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── EMERGENCY ── */
+function EmergencyScreen({onBack}){
+  const [chosen,setChosen]=useState(null);
+  const {acquire,release}=useWakeLock();
+  const qt=[
+    {id:"box",label:"박스 호흡",desc:"4·4·4·4 균등 리듬",icon:"⬜",color:T.teal},
+    {id:"54321",label:"그라운딩",desc:"5가지 감각 찾기",icon:"🌿",color:T.green},
+    {id:"cold",label:"냉수 반사",desc:"얼굴·손목에 찬물",icon:"🧊",color:T.cold},
+  ];
+  function pick(id){ acquire(); setChosen(id); }
+  function done(){ release(); setChosen(null); }
+
+  if(chosen==="box") return <BoxBreathPlayer onDone={done}/>;
+  if(chosen==="54321") return <GroundingPlayer tech={TECHNIQUES[3]} onDone={done}/>;
+  if(chosen==="cold") return(
+    <div style={S.page}>
+      <div style={S.hdr}><button style={S.back} onClick={done}>←</button><h2 style={S.ttl}>냉수 다이브 반사</h2></div>
+      <div style={{padding:20}}>
+        <div style={{...S.card,borderColor:`${T.cold}33`,background:"#f0f9ff",marginBottom:20}}>
+          <p style={{fontSize:14,color:T.text,lineHeight:1.8,margin:0}}><strong style={{color:T.cold}}>기억하세요:</strong> 찬물이 얼굴에 닿으면 미주신경이 자극되어 심박수가 즉각 낮아집니다.</p>
+        </div>
+        {["찬물을 그릇이나 세면대에 받습니다.","숨을 크게 들이쉽니다.","얼굴을 물에 30초간 담급니다.","어렵다면 손목·목에 냉수 수건을 댑니다.","심박수가 낮아지는 것을 느낍니다."].map((s,i)=>(
+          <div key={i} style={{...S.card,display:"flex",gap:14,alignItems:"flex-start"}}>
+            <div style={{width:26,height:26,borderRadius:"50%",background:T.cold,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:800,color:"#fff",flexShrink:0}}>{i+1}</div>
+            <span style={{fontSize:15,lineHeight:1.7,paddingTop:3}}>{s}</span>
+          </div>
+        ))}
+        <p style={{fontSize:12,color:T.warn,marginTop:4}}>⚠️ 심장 질환·고혈압이 있다면 의사와 먼저 상담하세요.</p>
+        <button style={S.btn(T.cold)} onClick={done}>완료</button>
+      </div>
+    </div>
+  );
+
+  return(
+    <div style={S.page}>
+      <div style={S.hdr}><button style={S.back} onClick={onBack}>←</button><h2 style={{...S.ttl,color:T.danger}}>지금 바로 대처하기</h2></div>
+      <div style={{padding:"16px 20px 0"}}>
+        <div style={{...S.card,borderColor:`${T.danger}44`,background:"#fff5f5",marginBottom:20}}>
+          <p style={{fontSize:14,color:T.text,lineHeight:1.85,margin:0}}>
+            <strong style={{color:T.warn}}>기억하세요.</strong> 지금 느끼는 감각은 매우 불편하지만 위험하지 않습니다.<br/>공황발작은 반드시 지나갑니다. 아래 기법 중 하나를 선택해 따라가세요.
+          </p>
+        </div>
+        {qt.map(t=>(
+          <button key={t.id} onClick={()=>pick(t.id)} style={{display:"flex",alignItems:"center",gap:16,width:"100%",background:T.card,border:`1.5px solid ${t.color}55`,borderRadius:16,padding:"16px 18px",cursor:"pointer",marginBottom:10,textAlign:"left",boxShadow:T.shadow}}>
+            <span style={{fontSize:30}}>{t.icon}</span>
+            <div style={{flex:1}}>
+              <div style={{fontSize:15,fontWeight:700,color:t.color}}>{t.label}</div>
+              <div style={{fontSize:12,color:T.muted,marginTop:2}}>{t.desc}</div>
+            </div>
+            <span style={{color:T.muted,fontSize:18}}>→</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ── TECH DETAIL ── */
+function TechDetail({tech,onBack,onPractice}){
+  return(
+    <div style={S.page}>
+      <div style={S.hdr}><button style={S.back} onClick={onBack}>←</button><h2 style={{...S.ttl,color:tech.color||T.text}}>{tech.title}</h2></div>
+      <div style={{padding:"16px 20px 0"}}>
+        <div style={{...S.card,borderColor:`${tech.color||T.accent}44`,background:`${tech.color||T.accent}08`}}>
+          <div style={{...S.lbl,color:tech.color||T.accent}}>왜 효과가 있나</div>
+          <p style={{fontSize:14,color:T.text,lineHeight:1.85,margin:0}}>{tech.why}</p>
+          {tech.caution&&<p style={{fontSize:13,color:T.warn,marginTop:10,marginBottom:0}}>⚠️ {tech.caution}</p>}
+        </div>
+        <div style={S.card}>
+          <div style={S.lbl}>연습 방법</div>
+          {tech.steps.map((s,i)=>(
+            <div key={i} style={{display:"flex",gap:12,marginBottom:10}}>
+              <div style={{width:22,height:22,borderRadius:"50%",background:tech.color||T.accent,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:800,color:"#fff",flexShrink:0,marginTop:2}}>{i+1}</div>
+              <span style={{fontSize:14,color:T.text,lineHeight:1.75}}>{s}</span>
+            </div>
+          ))}
+        </div>
+        <button style={S.btn(tech.color||T.accent)} onClick={()=>onPractice(tech)}>지금 연습하기 →</button>
+        <button style={S.ghost} onClick={onBack}>돌아가기</button>
+      </div>
+    </div>
+  );
+}
+
+/* ── CHECK CARD ── */
+function CheckCard({label,labels,value,onChange,color}){
+  return(
+    <div style={{...S.card,marginBottom:14}}>
+      <div style={S.lbl}>{label}</div>
+      <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
+        {labels.map((l,i)=>(
+          <button key={i} onClick={()=>onChange(i)}
+            style={{flex:"1 1 auto",minWidth:56,padding:"8px 4px",borderRadius:10,fontSize:11,fontWeight:700,border:`1.5px solid ${value===i?color:T.border}`,background:value===i?`${color}22`:T.bg,color:value===i?color:T.muted,cursor:"pointer",lineHeight:1.4,textAlign:"center"}}>
+            {l}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ── SESSION ── */
+function SessionScreen({onBack,data,onSave}){
+  const [step,setStep]=useState("precheck");
+  const [draft,setDraft]=useState({date:new Date().toISOString(),pre:{mood:null,anxiety:null},post:{mood:null,anxiety:null},techs:[],reflection:""});
+  const [chosen,setChosen]=useState(null);
+  const [detail,setDetail]=useState(null);
+
+  function finishPractice(){ setDraft(d=>({...d,techs:d.techs.includes(chosen.title)?d.techs:[...d.techs,chosen.title]})); setChosen(null); setStep("pick"); }
+  function finish(){ onSave({sessions:[draft,...data.sessions]}); setStep("done"); }
+
+  if(step==="detail"&&detail) return(
+    <TechDetail tech={detail} onBack={()=>{setDetail(null);setStep("pick");}} onPractice={t=>{setDetail(null);setChosen(t);setStep("practice");}}/>
+  );
+
+  if(step==="practice"&&chosen){
+    if(chosen.id==="box") return <BoxBreathPlayer onDone={finishPractice}/>;
+    if(chosen.phases) return <BreathPlayer phases={chosen.phases} cycles={chosen.cycles} title={chosen.title} onDone={finishPractice}/>;
+    if(chosen.muscleGroups) return <PMRPlayer tech={chosen} onDone={finishPractice}/>;
+    if(chosen.senses) return <GroundingPlayer tech={chosen} onDone={finishPractice}/>;
+    return(
+      <div style={S.page}>
+        <div style={S.hdr}><button style={S.back} onClick={finishPractice}>← 완료</button><h2 style={S.ttl}>{chosen.title}</h2></div>
+        <div style={{padding:20}}>
+          {chosen.steps.map((s,i)=>(
+            <div key={i} style={{...S.card,display:"flex",gap:14}}>
+              <div style={{width:24,height:24,borderRadius:"50%",background:T.cold,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:800,color:"#fff",flexShrink:0}}>{i+1}</div>
+              <span style={{fontSize:14,lineHeight:1.75,paddingTop:2}}>{s}</span>
+            </div>
+          ))}
+          {chosen.caution&&<p style={{fontSize:12,color:T.warn,marginTop:4}}>⚠️ {chosen.caution}</p>}
+          <button style={S.btn(T.cold)} onClick={finishPractice}>완료 ✓</button>
+        </div>
+      </div>
+    );
+  }
+
+  if(step==="precheck") return(
+    <div style={S.page}>
+      <div style={S.hdr}><button style={S.back} onClick={onBack}>←</button><h2 style={S.ttl}>연습 전 상태 확인</h2></div>
+      <div style={{padding:"20px 20px 0"}}>
+        <p style={{fontSize:13,color:T.muted,lineHeight:1.75,marginBottom:20}}>연습 전후 상태를 비교해 변화를 확인합니다.</p>
+        <CheckCard label="지금 기분은?" labels={MOOD_LABELS} value={draft.pre.mood} onChange={v=>setDraft(d=>({...d,pre:{...d.pre,mood:v}}))} color={T.accent}/>
+        <CheckCard label="지금 불안 수준은?" labels={ANXIETY_LABELS} value={draft.pre.anxiety} onChange={v=>setDraft(d=>({...d,pre:{...d.pre,anxiety:v}}))} color={T.warn}/>
+        <button disabled={draft.pre.mood===null||draft.pre.anxiety===null}
+          style={{...S.btn(T.accent),opacity:(draft.pre.mood===null||draft.pre.anxiety===null)?0.4:1,marginTop:16}}
+          onClick={()=>setStep("pick")}>다음 →</button>
+      </div>
+    </div>
+  );
+
+  if(step==="pick") return(
+    <div style={S.page}>
+      <div style={S.hdr}><button style={S.back} onClick={()=>setStep("precheck")}>←</button><h2 style={S.ttl}>기법 선택</h2></div>
+      <div style={{padding:"16px 20px 0"}}>
+        {draft.techs.length>0&&(
+          <div style={{...S.card,borderColor:`${T.teal}44`,background:`${T.teal}08`,marginBottom:4}}>
+            <div style={{fontSize:12,color:T.teal,fontWeight:700,marginBottom:6}}>✓ 오늘 연습한 기법</div>
+            {draft.techs.map((t,i)=><div key={i} style={{fontSize:13,color:T.muted}}>{t}</div>)}
+          </div>
+        )}
+        <p style={{fontSize:12,color:T.muted,lineHeight:1.7,margin:"12px 0 14px"}}>기법 이름을 탭하면 설명을 볼 수 있습니다. <strong style={{color:T.text}}>▶ 연습</strong> 버튼으로 바로 시작하세요.</p>
+        {TECHNIQUES.map(t=>{
+          const done=draft.techs.includes(t.title);
+          return(
+            <div key={t.id} style={{display:"flex",alignItems:"center",background:done?`${T.teal}08`:T.card,border:`1.5px solid ${done?T.teal+"55":T.border}`,borderRadius:16,marginBottom:10,overflow:"hidden",boxShadow:T.shadow}}>
+              <button onClick={()=>{setDetail(t);setStep("detail");}} style={{display:"flex",alignItems:"center",gap:12,flex:1,background:"none",border:"none",padding:"14px 16px",cursor:"pointer",textAlign:"left"}}>
+                <span style={{fontSize:26}}>{t.icon}</span>
+                <div>
+                  <div style={{fontSize:14,fontWeight:700,color:done?T.teal:t.color||T.text}}>{t.title}{done?" ✓":""}</div>
+                  <div style={{fontSize:11,color:T.muted,marginTop:2}}>{t.sub} · 탭하면 설명 보기</div>
+                </div>
+              </button>
+              <button onClick={()=>{setChosen(t);setStep("practice");}} style={{background:t.color||T.accent,border:"none",color:"#fff",padding:"0 18px",minHeight:60,fontSize:12,fontWeight:800,cursor:"pointer",whiteSpace:"nowrap"}}>▶ 연습</button>
+            </div>
+          );
+        })}
+        {draft.techs.length>0&&<button style={S.btn(T.teal)} onClick={()=>setStep("postcheck")}>연습 마치고 기록하기 →</button>}
+      </div>
+    </div>
+  );
+
+  if(step==="postcheck") return(
+    <div style={S.page}>
+      <div style={S.hdr}><button style={S.back} onClick={()=>setStep("pick")}>←</button><h2 style={S.ttl}>연습 후 상태 & Reflection</h2></div>
+      <div style={{padding:"20px 20px 0"}}>
+        <CheckCard label="지금 기분은?" labels={MOOD_LABELS} value={draft.post.mood} onChange={v=>setDraft(d=>({...d,post:{...d.post,mood:v}}))} color={T.accent}/>
+        <CheckCard label="지금 불안 수준은?" labels={ANXIETY_LABELS} value={draft.post.anxiety} onChange={v=>setDraft(d=>({...d,post:{...d.post,anxiety:v}}))} color={T.warn}/>
+        <div style={S.card}>
+          <div style={S.lbl}>오늘의 Reflection (선택)</div>
+          <textarea value={draft.reflection} onChange={e=>setDraft(d=>({...d,reflection:e.target.value}))}
+            placeholder="오늘 연습에서 느낀 것, 몸의 변화, 어려웠던 점 등을 자유롭게 적어보세요."
+            style={{width:"100%",minHeight:110,background:T.bg,border:`1px solid ${T.border}`,borderRadius:10,color:T.text,fontSize:14,padding:12,resize:"vertical",lineHeight:1.75,boxSizing:"border-box"}}/>
+        </div>
+        <button disabled={draft.post.mood===null||draft.post.anxiety===null}
+          style={{...S.btn(T.teal),opacity:(draft.post.mood===null||draft.post.anxiety===null)?0.4:1}}
+          onClick={finish}>세션 완료 저장 ✓</button>
+      </div>
+    </div>
+  );
+
+  if(step==="done"){
+    const md=draft.post.mood-draft.pre.mood; const ad=draft.pre.anxiety-draft.post.anxiety;
+    return(
+      <div style={{...S.page,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:"100vh",padding:"0 28px",textAlign:"center"}}>
+        <div style={{fontSize:64,marginBottom:16}}>🎉</div>
+        <div style={{fontSize:24,fontWeight:900,color:T.teal,marginBottom:8}}>오늘 연습 완료!</div>
+        <p style={{color:T.muted,fontSize:14,lineHeight:1.85,marginBottom:24}}>
+          {draft.techs.join(", ")} 연습을 마쳤습니다.<br/>
+          {md>0&&`기분이 ${md}단계 나아졌습니다. `}{ad>0&&`불안이 ${ad}단계 줄었습니다.`}
+          {md<=0&&ad<=0&&"꾸준한 연습이 쌓여갑니다."}
+        </p>
+        <button style={{...S.btn(T.accent),maxWidth:280,marginTop:8}} onClick={onBack}>홈으로 →</button>
+      </div>
+    );
+  }
+  return null;
+}
+
+/* ── LOG ── */
+function LogScreen({onBack,data,onReset}){
+  const [sel,setSel]=useState(null);
+  const [confirmReset,setConfirmReset]=useState(false);
+  const today=new Date(); const year=today.getFullYear(),month=today.getMonth();
+  const todayStr=today.toISOString().slice(0,10);
+  const firstDay=new Date(year,month,1).getDay();
+  const daysInMonth=new Date(year,month+1,0).getDate();
+  function cntDay(d){ const ds=`${year}-${String(month+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`; return data.sessions.filter(s=>s.date.startsWith(ds)).length; }
+
+  if(sel!==null){
+    const s=data.sessions[sel]; const md=s.post.mood-s.pre.mood; const ad=s.pre.anxiety-s.post.anxiety;
+    return(
+      <div style={S.page}>
+        <div style={S.hdr}><button style={S.back} onClick={()=>setSel(null)}>←</button>
+          <h2 style={S.ttl}>{new Date(s.date).toLocaleDateString("ko-KR",{month:"long",day:"numeric"})} 기록</h2>
+        </div>
+        <div style={{padding:"20px 20px 0"}}>
+          <div style={S.card}>
+            <div style={S.lbl}>연습 전 → 후</div>
+            <div style={{display:"flex",gap:12}}>
+              <div style={{flex:1}}>
+                <div style={{fontSize:11,color:T.muted,marginBottom:4}}>기분 (전)</div><div style={{fontSize:13}}>{MOOD_LABELS[s.pre.mood]}</div>
+                <div style={{fontSize:11,color:T.muted,marginTop:10,marginBottom:4}}>불안 (전)</div><div style={{fontSize:13}}>{ANXIETY_LABELS[s.pre.anxiety]}</div>
+              </div>
+              <div style={{width:1,background:T.border}}/>
+              <div style={{flex:1}}>
+                <div style={{fontSize:11,color:T.muted,marginBottom:4}}>기분 (후)</div><div style={{fontSize:13}}>{MOOD_LABELS[s.post.mood]}</div>
+                <div style={{fontSize:11,color:T.muted,marginTop:10,marginBottom:4}}>불안 (후)</div><div style={{fontSize:13}}>{ANXIETY_LABELS[s.post.anxiety]}</div>
+              </div>
+            </div>
+            {(md!==0||ad!==0)&&(
+              <div style={{display:"flex",gap:8,marginTop:14}}>
+                {md>0&&<span style={{fontSize:11,background:`${T.accent}22`,color:T.accent,borderRadius:8,padding:"2px 8px"}}>기분 +{md}</span>}
+                {md<0&&<span style={{fontSize:11,background:`${T.danger}22`,color:T.danger,borderRadius:8,padding:"2px 8px"}}>기분 {md}</span>}
+                {ad>0&&<span style={{fontSize:11,background:`${T.teal}22`,color:T.teal,borderRadius:8,padding:"2px 8px"}}>불안 -{ad}</span>}
+              </div>
+            )}
+          </div>
+          <div style={S.card}><div style={S.lbl}>연습한 기법</div>{s.techs.map((t,i)=><div key={i} style={{fontSize:14,color:T.teal,marginBottom:5}}>✓ {t}</div>)}</div>
+          {s.reflection&&<div style={S.card}><div style={S.lbl}>Reflection</div><p style={{fontSize:14,color:T.text,lineHeight:1.85,margin:0,whiteSpace:"pre-wrap"}}>{s.reflection}</p></div>}
+        </div>
+      </div>
+    );
+  }
+
+  return(
+    <div style={S.page}>
+      <div style={S.hdr}><button style={S.back} onClick={onBack}>←</button><h2 style={S.ttl}>연습 기록</h2></div>
+      <div style={{padding:"16px 20px 0"}}>
+        <div style={S.card}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
+            <div style={{fontSize:14,fontWeight:700,color:T.text}}>{year}년 {month+1}월</div>
+            <div style={{display:"flex",alignItems:"center",gap:6,fontSize:11,color:T.muted}}>
+              <div style={{width:10,height:10,borderRadius:"50%",background:T.accent}}/> 연습 완료
+            </div>
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:4,marginBottom:6}}>
+            {["일","월","화","수","목","금","토"].map(d=><div key={d} style={{textAlign:"center",fontSize:11,color:T.muted,fontWeight:700}}>{d}</div>)}
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:4}}>
+            {Array.from({length:firstDay}).map((_,i)=><div key={`e${i}`}/>)}
+            {Array.from({length:daysInMonth},(_,i)=>i+1).map(d=>{
+              const cnt=cntDay(d);
+              const ds=`${year}-${String(month+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+              const isToday=ds===todayStr;
+              return(
+                <div key={d} style={{display:"flex",flexDirection:"column",alignItems:"center",padding:"4px 0"}}>
+                  <div style={{fontSize:11,color:isToday?T.accent:T.muted,fontWeight:isToday?800:400,marginBottom:3}}>{d}</div>
+                  <div style={{width:18,height:18,borderRadius:"50%",background:cnt>0?T.accent:"transparent",border:isToday?`2px solid ${T.accent}`:cnt>0?"none":`1.5px solid ${T.dim}`}}/>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {data.sessions.length===0?(
+          <div style={{textAlign:"center",padding:"40px 0",color:T.muted}}>
+            <div style={{fontSize:48,marginBottom:12}}>📋</div>
+            <div style={{fontSize:15}}>아직 기록이 없습니다.</div>
+          </div>
+        ):(
+          <>
+            <div style={{fontSize:11,color:T.muted,fontWeight:700,letterSpacing:1,marginBottom:10}}>세션 기록</div>
+            {data.sessions.map((s,i)=>{
+              const md=s.post.mood-s.pre.mood,ad=s.pre.anxiety-s.post.anxiety;
+              return(
+                <button key={i} onClick={()=>setSel(i)} style={{display:"block",width:"100%",background:T.card,border:`1px solid ${T.border}`,borderRadius:14,padding:"14px 18px",marginBottom:10,cursor:"pointer",textAlign:"left",boxShadow:T.shadow}}>
+                  <div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}>
+                    <span style={{fontSize:14,fontWeight:700,color:T.text}}>{new Date(s.date).toLocaleDateString("ko-KR",{month:"long",day:"numeric",weekday:"short"})}</span>
+                    <span style={{fontSize:12,color:T.muted}}>{new Date(s.date).toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit"})}</span>
+                  </div>
+                  <div style={{fontSize:12,color:T.muted,marginBottom:6}}>{s.techs.join(" · ")||"기법 미선택"}</div>
+                  <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+                    {md>0&&<span style={{fontSize:11,background:`${T.accent}22`,color:T.accent,borderRadius:8,padding:"2px 8px"}}>기분 +{md}</span>}
+                    {ad>0&&<span style={{fontSize:11,background:`${T.teal}22`,color:T.teal,borderRadius:8,padding:"2px 8px"}}>불안 -{ad}</span>}
+                    {s.reflection&&<span style={{fontSize:11,background:`${T.violet}22`,color:T.violet,borderRadius:8,padding:"2px 8px"}}>✍️ reflection</span>}
+                  </div>
+                </button>
+              );
+            })}
+          </>
+        )}
+
+        <div style={{marginTop:16,paddingTop:16,borderTop:`1px solid ${T.border}`}}>
+          {!confirmReset?(
+            <button onClick={()=>setConfirmReset(true)} style={{background:"none",border:`1.5px solid ${T.danger}55`,color:T.danger,borderRadius:12,padding:"10px 20px",fontSize:13,cursor:"pointer",width:"100%"}}>
+              🗑 전체 기록 초기화
+            </button>
+          ):(
+            <div style={{...S.card,borderColor:`${T.danger}55`,background:"#fff5f5"}}>
+              <p style={{fontSize:14,color:T.text,margin:"0 0 14px",lineHeight:1.7}}>모든 연습 기록이 삭제됩니다. 이 작업은 되돌릴 수 없습니다. 계속하시겠습니까?</p>
+              <div style={{display:"flex",gap:10}}>
+                <button onClick={()=>{onReset();setConfirmReset(false);}} style={{flex:1,background:T.danger,color:"#fff",border:"none",borderRadius:10,padding:"11px",fontSize:14,fontWeight:700,cursor:"pointer"}}>삭제합니다</button>
+                <button onClick={()=>setConfirmReset(false)} style={{flex:1,background:T.bg,border:`1.5px solid ${T.border}`,color:T.text,borderRadius:10,padding:"11px",fontSize:14,cursor:"pointer"}}>취소</button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── ROOT ── */
+function App(){
+  const [screen,setScreen]=useState("home");
+  const [data,setData]=useState(loadData);
+  function persist(u){ setData(u); saveData(u); }
+  function reset(){ const d={sessions:[]}; setData(d); saveData(d); }
+
+  if(screen==="info")      return <InfoScreen      onBack={()=>setScreen("home")}/>;
+  if(screen==="emergency") return <EmergencyScreen onBack={()=>setScreen("home")}/>;
+  if(screen==="session")   return <SessionScreen   onBack={()=>setScreen("home")} data={data} onSave={persist}/>;
+  if(screen==="log")       return <LogScreen       onBack={()=>setScreen("home")} data={data} onReset={reset}/>;
+  return <HomeScreen onNav={setScreen} data={data}/>;
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App/>);
+</script>
+</body>
+</html>

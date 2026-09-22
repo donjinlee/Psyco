@@ -1,0 +1,1245 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <style>
+    :root{color-scheme:light dark; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px)}
+    html,body{margin:0}
+    body{font-family:system-ui,-apple-system,sans-serif; font-size:14px; background:#F3F6F4}
+    img{max-width:100%} [hidden]{display:none!important}
+  </style>
+<title>마음 꺼내기 연습</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@300;400;500;600&display=swap">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <meta name="theme-color" content="#F3F6F4" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#141A18" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="마음 꺼내기">
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+  <link rel="icon" href="./icon-192.png" type="image/png">
+  <meta name="description" content="내 마음을 말로 꺼내는 연습과 기록">
+
+<style>
+  :root{
+    --paper:#F3F6F4; --card:#FCFDFC; --card-2:#F7FAF8;
+    --ink:#1F2E29; --ink-2:#55675F; --ink-3:#84968E;
+    --line:#DBE4DF; --line-2:#EBF0ED;
+    --sage:#417764; --sage-ink:#2F5A4B; --sage-soft:#E3EFE8;
+    --sand:#A9803F; --sand-soft:#F6EEDF;
+    --plum:#6F5E82; --plum-soft:#EDE9F2;
+    --shadow:0 1px 2px rgba(31,46,41,.05), 0 8px 24px -16px rgba(31,46,41,.18);
+    --r:14px;
+    --serif:'Gowun Batang', 'Apple SD Gothic Neo', serif;
+    --sans:'IBM Plex Sans KR', 'Apple SD Gothic Neo', system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#141A18; --card:#1C2321; --card-2:#222A27;
+      --ink:#E5EBE8; --ink-2:#9DACA5; --ink-3:#77867F;
+      --line:#2B3532; --line-2:#242C29;
+      --sage:#7DB6A0; --sage-ink:#A8D2C1; --sage-soft:#1E2E28;
+      --sand:#CCA470; --sand-soft:#2C2620;
+      --plum:#AB9BBC; --plum-soft:#262231;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -16px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#141A18; --card:#1C2321; --card-2:#222A27;
+    --ink:#E5EBE8; --ink-2:#9DACA5; --ink-3:#77867F;
+    --line:#2B3532; --line-2:#242C29;
+    --sage:#7DB6A0; --sage-ink:#A8D2C1; --sage-soft:#1E2E28;
+    --sand:#CCA470; --sand-soft:#2C2620;
+    --plum:#AB9BBC; --plum-soft:#262231;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -16px rgba(0,0,0,.6);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:var(--sans); font-weight:400; font-size:15.5px; line-height:1.75;
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:700px; margin:0 auto; padding:0 18px; padding-block:0 64px}
+
+  /* ---------- masthead ---------- */
+  .masthead{padding-block:40px 22px}
+  .eyebrow{font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--sage); font-weight:500}
+  h1{font-family:var(--serif); font-weight:700; font-size:clamp(28px,7vw,38px); line-height:1.25; margin:10px 0 8px; text-wrap:balance; letter-spacing:-.01em}
+  .sub{color:var(--ink-2); font-size:14.5px; margin:0}
+  .privacy{
+    margin-top:18px; display:flex; gap:9px; align-items:flex-start;
+    font-size:12.5px; color:var(--ink-2); line-height:1.6;
+    background:var(--card-2); border:1px solid var(--line-2); border-radius:10px; padding:10px 12px;
+  }
+  .privacy svg{flex:0 0 auto; margin-top:3px}
+  .banner{
+    margin-top:12px; border-radius:12px; padding:13px 15px;
+    background:var(--sand-soft); border:1px solid var(--sand);
+  }
+  .banner .bt{font-size:14.5px; font-weight:600; color:var(--ink); margin-bottom:6px; line-height:1.55}
+  .banner .bb{font-size:13.5px; color:var(--ink-2); line-height:1.75}
+  .banner .bb b{color:var(--ink); font-weight:600}
+  .banner .bb ol{margin:6px 0 0; padding-left:18px}
+  .banner .bb li{margin-bottom:3px}
+  .banner.hint{background:var(--sage-soft); border-color:color-mix(in srgb, var(--sage) 35%, transparent)}
+  .banner-x{
+    margin-top:10px; font-family:var(--sans); font-size:12.5px; color:var(--ink-2);
+    background:transparent; border:1px solid var(--line); border-radius:8px;
+    padding:4px 11px; cursor:pointer;
+  }
+  .banner-x:hover{color:var(--ink); border-color:var(--ink-3)}
+  .banner-x:focus-visible{outline:2px solid var(--sage); outline-offset:2px}
+
+  /* ---------- nav ---------- */
+  nav{
+    position:sticky; top:env(safe-area-inset-top, 0px); z-index:20;
+    background:color-mix(in srgb, var(--paper) 90%, transparent);
+    backdrop-filter:blur(10px);
+    margin:0 -18px; padding:8px 18px;
+    border-bottom:1px solid var(--line-2);
+  }
+  .tabs{display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; -ms-overflow-style:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{
+    flex:0 0 auto; font-family:var(--sans); font-size:13.5px; font-weight:500;
+    color:var(--ink-2); background:transparent; border:1px solid transparent;
+    padding:7px 13px; border-radius:999px; cursor:pointer; white-space:nowrap;
+    transition:background .15s, color .15s, border-color .15s;
+  }
+  .tab:hover{color:var(--ink); background:var(--card)}
+  .tab[aria-selected="true"]{background:var(--sage-soft); color:var(--sage-ink); border-color:color-mix(in srgb, var(--sage) 30%, transparent)}
+  .tab:focus-visible{outline:2px solid var(--sage); outline-offset:2px}
+
+  /* ---------- sections ---------- */
+  section{padding-block:30px 8px}
+  .sec-num{font-family:var(--serif); font-size:12px; letter-spacing:.14em; color:var(--sand); text-transform:uppercase}
+  h2{font-family:var(--serif); font-weight:700; font-size:clamp(21px,5vw,26px); line-height:1.35; margin:6px 0 14px; text-wrap:balance}
+  h3{font-size:16px; font-weight:600; margin:30px 0 8px; letter-spacing:-.005em}
+  h3:first-of-type{margin-top:20px}
+  h4{font-size:13.5px; font-weight:600; color:var(--ink-2); margin:18px 0 6px}
+  p{margin:0 0 12px; max-width:62ch}
+  .lead{color:var(--ink-2); font-size:15px}
+  ul,ol{margin:0 0 14px; padding-left:20px}
+  li{margin-bottom:5px}
+  strong{font-weight:600}
+
+  /* ---------- blocks ---------- */
+  .card{background:var(--card); border:1px solid var(--line); border-radius:var(--r); padding:16px 17px; box-shadow:var(--shadow)}
+  .card + .card{margin-top:12px}
+  .quiet{background:var(--card-2); border:1px solid var(--line-2); border-radius:12px; padding:14px 16px; box-shadow:none}
+  .say{
+    background:var(--sage-soft); border-radius:12px; padding:14px 16px;
+    border-left:3px solid var(--sage);
+    font-family:var(--serif); font-size:16.5px; line-height:1.85; color:var(--ink);
+  }
+  .say p{margin:0 0 4px; max-width:none}
+  .say p:last-child{margin:0}
+  .say-label{font-family:var(--sans); font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--sage-ink); display:block; margin-bottom:7px; font-weight:500}
+  .note{font-size:13px; color:var(--ink-2); line-height:1.65}
+  .example{border:1px dashed var(--line); border-radius:12px; padding:13px 15px; background:transparent}
+  .example .tagline{font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); font-weight:500; margin-bottom:7px}
+  .example .body{font-family:var(--serif); font-size:15px; color:var(--ink-2); line-height:1.8}
+
+  .promise{display:grid; gap:10px; margin-bottom:8px}
+  .promise > div{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px}
+  .promise b{display:block; font-family:var(--serif); font-size:16.5px; font-weight:700; margin-bottom:5px}
+  .promise span{font-size:14px; color:var(--ink-2)}
+
+  /* ---------- table ---------- */
+  .tw{overflow-x:auto; margin:0 0 14px; border:1px solid var(--line); border-radius:12px; background:var(--card)}
+  table{border-collapse:collapse; width:100%; min-width:100%; font-size:14px}
+  th,td{text-align:left; padding:10px 13px; border-bottom:1px solid var(--line-2); vertical-align:top}
+  th{font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-2); font-weight:600; background:var(--card-2); white-space:nowrap}
+  tr:last-child td{border-bottom:none}
+  td.k{font-weight:500; white-space:nowrap; color:var(--ink)}
+  td.old{color:var(--ink-2)}
+  td.new{color:var(--sage-ink); font-weight:500}
+
+  /* ---------- emotion chips ---------- */
+  .fgroup{margin-bottom:14px}
+  .fgroup > .glabel{font-size:12px; letter-spacing:.06em; color:var(--sand); font-weight:600; margin-bottom:7px}
+  .chips{display:flex; flex-wrap:wrap; gap:6px}
+  .chip{
+    font-family:var(--sans); font-size:13.5px; color:var(--ink-2);
+    background:var(--card); border:1px solid var(--line); border-radius:999px;
+    padding:5px 12px; cursor:pointer; transition:all .13s;
+  }
+  .chip:hover{border-color:var(--sage); color:var(--ink)}
+  .chip[aria-pressed="true"]{background:var(--sage); border-color:var(--sage); color:#fff; font-weight:500}
+  .chip:focus-visible{outline:2px solid var(--sage); outline-offset:2px}
+  .picked{
+    margin-top:14px; padding:12px 14px; border-radius:12px; background:var(--card-2);
+    border:1px solid var(--line-2); font-size:14px; min-height:44px;
+  }
+  .picked .ph{color:var(--ink-3)}
+  .picked b{font-family:var(--serif); font-size:16px; color:var(--sage-ink)}
+
+  /* ---------- ladder ---------- */
+  .ladder{display:grid; gap:0; margin:18px 0}
+  .rung{
+    display:grid; grid-template-columns:44px 1fr; gap:14px;
+    padding:16px 0; border-top:1px solid var(--line);
+  }
+  .rung:last-child{border-bottom:1px solid var(--line)}
+  .rung-n{
+    font-family:var(--serif); font-size:20px; font-weight:700; color:var(--sage);
+    text-align:center; line-height:1.4;
+  }
+  .rung-n small{display:block; font-family:var(--sans); font-size:10px; letter-spacing:.08em; color:var(--ink-3); font-weight:500}
+  .rung h3{margin:0 0 6px; font-size:16.5px; font-family:var(--serif); font-weight:700}
+  .rung p{font-size:14px; color:var(--ink-2); margin:0 0 10px}
+  .rung .say{font-size:15.5px; padding:12px 14px}
+
+  /* ---------- forms ---------- */
+  label.fl{display:block; font-size:12.5px; font-weight:600; color:var(--ink-2); margin:12px 0 5px}
+  label.fl .hint{font-weight:400; color:var(--ink-3); letter-spacing:0}
+  input[type=text], input[type=date], input[type=number], textarea, select{
+    width:100%; font-family:var(--sans); font-size:14.5px; color:var(--ink);
+    background:var(--card-2); border:1px solid var(--line); border-radius:10px;
+    padding:9px 11px; line-height:1.6;
+  }
+  textarea{resize:vertical; min-height:62px}
+  input:focus, textarea:focus, select:focus{outline:2px solid var(--sage); outline-offset:1px; border-color:var(--sage)}
+  .row2{display:flex; gap:10px; flex-wrap:wrap}
+  .row2 > *{flex:1 1 150px; min-width:0}
+  .btnrow{display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; align-items:center}
+  button.act{
+    font-family:var(--sans); font-size:14px; font-weight:500; cursor:pointer;
+    background:var(--sage); color:#fff; border:1px solid var(--sage);
+    border-radius:10px; padding:9px 17px; transition:filter .14s;
+  }
+  button.act:hover{filter:brightness(1.08)}
+  button.ghost{background:transparent; color:var(--ink-2); border-color:var(--line)}
+  button.ghost:hover{color:var(--ink); border-color:var(--sage)}
+  button.mini{font-size:12.5px; padding:5px 11px; border-radius:8px}
+  button:focus-visible{outline:2px solid var(--sage); outline-offset:2px}
+  .ok{font-size:13px; color:var(--sage); font-weight:500}
+
+  /* ---------- counter ---------- */
+  .counter{display:flex; align-items:center; gap:16px; flex-wrap:wrap}
+  .count-n{font-family:var(--serif); font-size:44px; font-weight:700; line-height:1; color:var(--sand); font-variant-numeric:tabular-nums}
+  .count-lab{font-size:13px; color:var(--ink-2)}
+
+  /* ---------- records list ---------- */
+  .entries{display:grid; gap:10px; margin-top:16px}
+  .entry{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:13px 15px; font-size:14px}
+  .entry .top{display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:8px}
+  .entry .when{font-size:12px; letter-spacing:.04em; color:var(--sand); font-weight:600; font-variant-numeric:tabular-nums}
+  .entry dl{display:grid; grid-template-columns:auto 1fr; gap:3px 12px; margin:0; font-size:13.5px}
+  .entry dt{color:var(--ink-3); font-size:12.5px; white-space:nowrap}
+  .entry dd{margin:0; color:var(--ink); white-space:pre-wrap; overflow-wrap:anywhere}
+  .empty{color:var(--ink-3); font-size:13.5px; padding:16px 0; text-align:center; border:1px dashed var(--line); border-radius:12px}
+  .del{background:none; border:none; color:var(--ink-3); font-size:12px; cursor:pointer; padding:2px 6px; border-radius:6px; font-family:var(--sans)}
+  .del:hover{color:var(--sand); background:var(--sand-soft)}
+
+  /* ---------- my ladder editor ---------- */
+  .mylad{display:grid; gap:12px; margin-top:16px}
+  .mylad-g{border:1px solid var(--line); border-radius:12px; overflow:hidden; background:var(--card)}
+  .mylad-h{display:flex; justify-content:space-between; align-items:center; gap:10px; padding:9px 14px; background:var(--card-2); border-bottom:1px solid var(--line-2)}
+  .mylad-h b{font-size:13px; font-weight:600}
+  .mylad-h .dot{display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:7px; vertical-align:1px}
+  .mylad-rows{padding:10px 12px; display:grid; gap:8px}
+  .mylad-row{display:flex; gap:7px; align-items:flex-start}
+  .mylad-row input{font-size:13.5px; padding:7px 10px}
+  .mylad-row .who{flex:0 0 33%}
+  .mylad-row select{flex:0 0 78px; font-size:13px; padding:7px 6px}
+
+  /* ---------- 4-sentence composer ---------- */
+  .compose{display:grid; gap:0}
+  .cline{display:grid; grid-template-columns:78px 1fr; gap:12px; padding:14px 0; border-top:1px solid var(--line-2); align-items:start}
+  .cline:first-child{border-top:none}
+  .cline .ct{font-size:12.5px; font-weight:600; color:var(--sage); padding-top:9px}
+  .cline .ct small{display:block; font-weight:400; color:var(--ink-3); font-size:11px}
+  .preview{
+    margin-top:18px; background:var(--plum-soft); border-radius:12px; padding:16px 18px;
+    border-left:3px solid var(--plum);
+    font-family:var(--serif); font-size:16.5px; line-height:1.9; white-space:pre-wrap; min-height:60px;
+  }
+  .preview .ph{font-family:var(--sans); font-size:13.5px; color:var(--ink-3)}
+
+  /* ---------- review ---------- */
+  .stats{display:grid; grid-template-columns:repeat(auto-fit, minmax(96px,1fr)); gap:10px}
+  .stat{background:var(--card-2); border:1px solid var(--line-2); border-radius:11px; padding:11px 12px}
+  .stat b{display:block; font-family:var(--serif); font-size:26px; font-weight:700; line-height:1.2; color:var(--sage); font-variant-numeric:tabular-nums}
+  .stat span{font-size:12px; color:var(--ink-2)}
+  .stat.warm b{color:var(--sand)}
+  .stat.cool b{color:var(--plum)}
+  .diffhead{margin:20px 0 10px; font-size:13.5px; font-weight:600}
+  .diffhead span{display:block; font-weight:400; font-size:12.5px; color:var(--ink-2); margin-top:3px}
+  .diffs{display:grid; gap:9px}
+  .diffs .d{border-left:3px solid var(--plum); background:var(--plum-soft); border-radius:0 11px 11px 0; padding:11px 13px}
+  .diffs .d .w{font-size:11.5px; color:var(--ink-2); font-weight:600; letter-spacing:.04em; margin-bottom:5px; font-variant-numeric:tabular-nums}
+  .diffs .d .e{font-size:13px; color:var(--ink-2); margin-bottom:4px}
+  .diffs .d .r{font-size:14px; font-family:var(--serif); line-height:1.7; white-space:pre-wrap; overflow-wrap:anywhere}
+
+  /* ---------- export ---------- */
+  #exportBox{margin-top:14px; min-height:220px; font-family:ui-monospace, SFMono-Regular, Menlo, monospace; font-size:12.5px; line-height:1.7}
+
+  .closing{
+    margin-top:44px; padding-block:26px 0; border-top:1px solid var(--line);
+    font-family:var(--serif); font-size:17px; line-height:2; color:var(--ink-2); text-align:center;
+  }
+  .closing b{color:var(--ink); font-weight:700; display:block; margin-top:10px}
+
+  @media (max-width:430px){
+    .rung{grid-template-columns:34px 1fr; gap:10px}
+    .mylad-row{flex-wrap:wrap}
+    .mylad-row .who{flex:1 1 100%}
+    .cline{grid-template-columns:1fr; gap:4px}
+    .cline .ct{padding-top:0}
+  }
+  @media (prefers-reduced-motion:reduce){ *{transition:none !important; animation:none !important} }
+  @media print{
+    nav, section, .privacy{display:none !important}
+    #printOut{display:block !important; white-space:pre-wrap; font-family:var(--sans); font-size:12px; line-height:1.7; color:#000; margin:0}
+    body{background:#fff; color:#000}
+    .masthead{padding-block:0 14px} h1{font-size:22px} .sub{font-size:12px}
+  }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="eyebrow">연습 노트</div>
+    <h1>마음 꺼내기 연습</h1>
+    <p class="sub">내 마음을 말로 꺼내는 연습을 위한 작은 안내서</p>
+    <div class="privacy">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.6"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg>
+      <span>기록은 <b>이 기기에만</b> 저장됩니다. 어디로도 전송되지 않습니다. 기기를 바꾸면 옮겨지지 않으니, 남기고 싶은 기록은 <b>기록</b> 탭에서 복사해 두세요.</span>
+    </div>
+    <div class="banner" id="openWarn" hidden>
+      <div class="bt" id="openWarnT"></div>
+      <div class="bb" id="openWarnB"></div>
+      <button class="banner-x" id="openWarnX" type="button" hidden>알겠습니다, 닫기</button>
+    </div>
+  </header>
+
+  <nav aria-label="연습 목차">
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="t-start" aria-controls="p-start" aria-selected="true">시작하기</button>
+      <button class="tab" role="tab" id="t-notice" aria-controls="p-notice" aria-selected="false">마음 알아차리기</button>
+      <button class="tab" role="tab" id="t-stance" aria-controls="p-stance" aria-selected="false">덜 깎아내리기</button>
+      <button class="tab" role="tab" id="t-ladder" aria-controls="p-ladder" aria-selected="false">5단계 사다리</button>
+      <button class="tab" role="tab" id="t-frame" aria-controls="p-frame" aria-selected="false">네 문장 틀</button>
+      <button class="tab" role="tab" id="t-stuck" aria-controls="p-stuck" aria-selected="false">막힐 때</button>
+      <button class="tab" role="tab" id="t-log" aria-controls="p-log" aria-selected="false">기록</button>
+    </div>
+  </nav>
+
+  <!-- ══════════════ 시작하기 ══════════════ -->
+  <section id="p-start" role="tabpanel" aria-labelledby="t-start">
+    <div class="sec-num">혼자 이어가기</div>
+    <h2>세 가지 약속</h2>
+    <div class="promise">
+      <div><b>① 안 맞는 건 빼고 쓰세요.</b><span>해보다가 "이건 나랑 안 맞는다" 싶으면 그냥 넘어가세요. 무엇이 안 맞았는지 아는 것도 연습입니다.</span></div>
+      <div><b>② 잘하려고 하지 않으셔도 됩니다.</b><span>숙제가 아닙니다. 채점하는 사람도 없습니다. 아무것도 안 한 주가 있어도 괜찮습니다.</span></div>
+      <div><b>③ 연습은 준비물, 실제로 해보는 게 본론.</b><span>완벽해진 다음에 하려고 하면 그 '다음'이 잘 오지 않습니다. 어설퍼도 한 번 해보는 쪽이 빠릅니다.</span></div>
+    </div>
+
+    <h3>멈췄다가 다시 시작할 때</h3>
+    <div class="quiet">
+      <p style="margin-bottom:8px">한동안 안 하다가 돌아오는 건 실패가 아니라 <strong>원래 그런 것</strong>입니다. 다시 시작할 때는 예전 수준부터가 아니라 <strong>가장 쉬운 칸부터</strong> 잡으세요.</p>
+      <ul style="margin-bottom:0">
+        <li><strong>기록</strong> 탭의 '내 기록 돌아보기'를 먼저 읽어보세요 — 이미 해본 것들이 거기 있습니다.</li>
+        <li>사다리에서 <strong>난이도 낮음</strong> 한 칸을 고르세요.</li>
+        <li>한 번 해보고 기록하면, 다시 시작된 겁니다.</li>
+      </ul>
+    </div>
+
+    <h3>준비물</h3>
+    <div class="tw">
+      <table>
+        <thead><tr><th>준비물</th><th>방법</th></tr></thead>
+        <tbody>
+          <tr><td class="k">문장 미리 써두기</td><td>한 문장으로 적어두기. 그대로 읽어도 됩니다</td></tr>
+          <tr><td class="k">소리 내어 읽어보기</td><td>혼자 두세 번</td></tr>
+          <tr><td class="k">글로 먼저 보내기</td><td>메일이나 메시지부터. 글도 자기표현입니다</td></tr>
+          <tr><td class="k">시간 정해두기</td><td>"수업 끝나고 바로". "기회 되면"은 잘 안 옵니다</td></tr>
+          <tr><td class="k">빠져나갈 문장 준비</td><td>"일단 생각해 볼게요"</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>이 앱에서 할 수 있는 것</h3>
+    <div class="quiet">
+      <ul style="margin-bottom:0">
+        <li><strong>마음 알아차리기</strong> — 감정 단어 고르기, 하루 1분 기록</li>
+        <li><strong>덜 깎아내리기</strong> — 사과 세어보기</li>
+        <li><strong>5단계 사다리</strong> — 나만의 사다리, 이번에 해볼 것 정하기</li>
+        <li><strong>네 문장 틀</strong> — 할 말 써보고 복사하기</li>
+        <li><strong>기록</strong> — 예상 맞춰보기, 돌아보기, 쌓인 기록 읽기</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ══════════════ 마음 알아차리기 ══════════════ -->
+  <section id="p-notice" role="tabpanel" aria-labelledby="t-notice" hidden>
+    <div class="sec-num">1부</div>
+    <h2>내 마음 알아차리기</h2>
+
+    <h3>판단하지 않고 보기</h3>
+    <div class="say">
+      <span class="say-label">이렇게만</span>
+      <p>"아, 지금 좀 서운하구나."</p>
+      <p>"아, 지금 긴장했구나."</p>
+    </div>
+    <p class="note" style="margin-top:10px">여기서 끝. 좋다 나쁘다를 붙이지 않습니다. 판단이 튀어나오면 그것도 그냥 "아, 지금 나를 평가하고 있구나" 하고 봅니다.</p>
+
+    <h3>세 층으로 나눠 보기</h3>
+    <div class="tw">
+      <table>
+        <thead><tr><th>층</th><th>물어볼 것</th></tr></thead>
+        <tbody>
+          <tr><td class="k">① 몸</td><td>어깨가 굳었나? 속이 답답한가? 얼굴이 뜨거운가?<br>숨이 얕은가? 손에 힘이 들어갔나?</td></tr>
+          <tr><td class="k">② 감정</td><td>그 몸 상태에 이름을 붙인다면 뭘까?</td></tr>
+          <tr><td class="k">③ 생각</td><td>지금 머릿속에 지나가는 문장은 뭔가?<br>"사실"이 아니라 "지금 떠오른 말"로 보기</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>감정에 이름 붙이기</h3>
+    <p class="note">여러 개 골라도 됩니다. 섞여 있는 게 오히려 정확할 때가 많습니다.</p>
+    <div class="card">
+      <div id="emoGroups"></div>
+      <div class="picked" id="emoPicked" aria-live="polite"><span class="ph">지금 느껴지는 것을 눌러보세요.</span></div>
+      <div class="btnrow">
+        <button class="act mini" type="button" id="emoToLog">오늘 기록에 넣기</button>
+        <button class="ghost act mini" type="button" id="emoClear">다시 고르기</button>
+        <span class="ok" id="emoMsg" hidden>아래 '하루 1분'의 감정 칸에 넣었습니다.</span>
+      </div>
+    </div>
+
+    <h3>하루 1분 기록</h3>
+    <div class="example" style="margin-bottom:14px">
+      <div class="tagline">예시</div>
+      <div class="body">
+        순간 — 조교님이 답을 안 했을 때 · 몸 — 속이 답답했다<br>
+        감정 — 서운하다, 좀 불안하다 · 생각 — "내가 뭘 잘못 썼나"
+      </div>
+    </div>
+    <div class="card">
+      <form id="fDaily" autocomplete="off">
+        <label class="fl" for="d-date">날짜</label>
+        <input type="date" id="d-date" name="date">
+        <label class="fl" for="d-moment">마음이 움직인 순간</label>
+        <input type="text" id="d-moment" name="moment" placeholder="언제, 어떤 일이었는지 한 줄">
+        <div class="row2">
+          <div><label class="fl" for="d-body">몸</label><input type="text" id="d-body" name="body" placeholder="속이 답답했다"></div>
+          <div><label class="fl" for="d-emo">감정</label><input type="text" id="d-emo" name="emotion" placeholder="서운하다, 좀 불안하다"></div>
+        </div>
+        <label class="fl" for="d-thought">생각</label>
+        <input type="text" id="d-thought" name="thought" placeholder="&quot;내가 뭘 잘못 썼나&quot;">
+        <div class="btnrow">
+          <button class="act" type="submit">저장</button>
+          <span class="ok" id="dailyOk" hidden>저장했습니다.</span>
+        </div>
+      </form>
+      <div class="entries" id="dailyList"></div>
+    </div>
+  </section>
+
+  <!-- ══════════════ 덜 깎아내리기 ══════════════ -->
+  <section id="p-stance" role="tabpanel" aria-labelledby="t-stance" hidden>
+    <div class="sec-num">2부</div>
+    <h2>나를 덜 깎아내리기</h2>
+
+    <div class="quiet">
+      <ul style="margin-bottom:0">
+        <li><strong>공정하게</strong> — "상대가 나였다면, 나는 이 정도는 당연히 말할 수 있다고 봤을까?"</li>
+        <li><strong>불필요한 사과 줄이기</strong> — 잘못했을 때만</li>
+        <li><strong>내 기준 지키기</strong> — 메뉴, 약속 시간, 취향 같은 작은 것부터</li>
+        <li><strong>못하는 척 하지 않기</strong> — 미리 낮추면 나도 그렇게 믿게 됩니다</li>
+      </ul>
+    </div>
+
+    <h3>바꿔 볼 말</h3>
+    <div class="tw">
+      <table>
+        <thead><tr><th>자주 하는 말</th><th>바꿔 볼 말</th></tr></thead>
+        <tbody>
+          <tr><td class="old">"죄송한데요, 혹시…"</td><td class="new">"여쭤볼 게 있는데요"</td></tr>
+          <tr><td class="old">"제가 잘 몰라서 그러는데…"</td><td class="new">"이거 설명해 주실 수 있을까요"</td></tr>
+          <tr><td class="old">"바쁘실 텐데 시간 뺏어서…"</td><td class="new">"5분만 시간 괜찮으실까요"</td></tr>
+          <tr><td class="old">"별거 아닌데요…"</td><td class="new">(그냥 본론부터)</td></tr>
+          <tr><td class="old">"제가 눈치가 없어서…"</td><td class="new">(빼기)</td></tr>
+          <tr><td class="old">"제가 원래 잘 못해서요…"</td><td class="new">(빼기)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">말이 아닌 사과도 있습니다 — 말끝 흐리기, 목소리 작게, 몸 웅크리기, 말하기 전에 웃어 보이기.</p>
+
+    <h3>사과 세어보기</h3>
+    <div class="card">
+      <p style="font-size:14px; margin-bottom:14px">세어만 보세요. 줄이려고 하지 않아도 됩니다.</p>
+      <div class="counter">
+        <div><div class="count-n" id="apoN">0</div><div class="count-lab" id="apoDate">오늘</div></div>
+        <div class="btnrow" style="margin-top:0">
+          <button class="act" type="button" id="apoUp">+ 한 번</button>
+          <button class="act ghost mini" type="button" id="apoDown">되돌리기</button>
+          <button class="act ghost mini" type="button" id="apoReset">0으로</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ 5단계 사다리 ══════════════ -->
+  <section id="p-ladder" role="tabpanel" aria-labelledby="t-ladder" hidden>
+    <div class="sec-num">3부 · 5부</div>
+    <h2>마음 꺼내기 5단계</h2>
+    <p class="lead">아래 칸부터 한 칸씩.</p>
+
+    <div class="ladder">
+      <div class="rung">
+        <div class="rung-n">1<small>단계</small></div>
+        <div>
+          <h3>마음 꺼내기</h3>
+          <p>요구가 아니라 알려주는 것. 좋은 감정부터 시작해도 됩니다.</p>
+          <div class="say"><p>"저 그때 좀 서운했어요."</p><p>"그 얘기 듣고 좀 놀랐어요."</p><p>"솔직히 그때 좀 부담됐어요."</p><p>"그거 재밌었어요."</p></div>
+        </div>
+      </div>
+      <div class="rung">
+        <div class="rung-n">2<small>단계</small></div>
+        <div>
+          <h3>좋아하는 것 말하기</h3>
+          <p>"아무거나", "너 편한 대로" 대신. 이유는 안 대도 됩니다.</p>
+          <div class="say"><p>"저는 이게 더 좋아요."</p><p>"저는 그쪽보다 이쪽이 나을 것 같아요."</p><p>"저는 좀 조용한 데가 편해요."</p></div>
+        </div>
+      </div>
+      <div class="rung">
+        <div class="rung-n">3<small>단계</small></div>
+        <div>
+          <h3>모른다고 말하기</h3>
+          <p>제일 어렵고, 아마 제일 중요한 칸입니다.</p>
+          <div class="say"><p>"이거 잘 모르겠어요."</p><p>"여기부터 이해가 안 됐는데, 다시 설명해 주실 수 있을까요?"</p><p>"제가 잘못 알고 있는 건지 모르겠는데, 이게 맞나요?"</p></div>
+          <div class="tw" style="margin:12px 0 0">
+            <table>
+              <thead><tr><th>난이도</th><th>상대 (예시)</th></tr></thead>
+              <tbody>
+                <tr><td class="k">낮음</td><td>가게 점원, 온라인 커뮤니티, 후배</td></tr>
+                <tr><td class="k">중간</td><td>친구, 같은 과 동기</td></tr>
+                <tr><td class="k">높음</td><td>조교, 선배, 동아리 임원</td></tr>
+                <tr><td class="k">가장 높음</td><td>교수님, 가족</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="rung">
+        <div class="rung-n">4<small>단계</small></div>
+        <div>
+          <h3>부탁하기</h3>
+          <p>네 문장 틀을 쓰면 수월합니다.</p>
+          <div class="say"><p>"이거 좀 도와주실 수 있을까요?"</p><p>"자료 하나만 보내주실 수 있나요?"</p><p>"혹시 마감을 조금 늦춰주실 수 있을까요?"</p></div>
+        </div>
+      </div>
+      <div class="rung">
+        <div class="rung-n">5<small>단계</small></div>
+        <div>
+          <h3>거절하기</h3>
+          <p>여기까지 못 와도 괜찮습니다. 마지막 문장은 시간 벌기입니다.</p>
+          <div class="say"><p>"그건 좀 어려울 것 같아요."</p><p>"이번엔 못 할 것 같아요."</p><p>"생각해 보고 말씀드려도 될까요?"</p></div>
+        </div>
+      </div>
+    </div>
+
+    <h3>나만의 난이도 사다리</h3>
+    <p class="note">적는 것만으로도 어디서부터 시작할지가 보입니다. '가장 높음' 칸은 당분간 손대지 않아도 됩니다. 한 칸을 해냈으면 난이도를 옮겨 적어두세요 — 사다리가 바뀌는 게 눈에 보입니다.</p>
+    <div class="mylad" id="myLadder"></div>
+    <div class="btnrow">
+      <button class="act" type="button" id="ladSave">사다리 저장</button>
+      <span class="ok" id="ladOk" hidden>저장했습니다.</span>
+    </div>
+
+    <h3>이번에 해볼 것 하나</h3>
+    <div class="card">
+      <form id="fWeekPick" autocomplete="off">
+        <div class="row2">
+          <div><label class="fl" for="w-who">상대</label><input type="text" id="w-who" name="who" placeholder="예: 같은 과 동기"></div>
+          <div><label class="fl" for="w-when">언제</label><input type="text" id="w-when" name="when" placeholder="예: 수업 끝나고 바로"></div>
+        </div>
+        <label class="fl" for="w-sit">상황</label>
+        <input type="text" id="w-sit" name="situation" placeholder="어떤 상황에서">
+        <label class="fl" for="w-say">할 말 <span class="hint">— 한 문장으로</span></label>
+        <input type="text" id="w-say" name="say" placeholder="실제로 할 말 그대로">
+        <div class="btnrow">
+          <button class="act" type="submit">목표로 저장</button>
+          <span class="ok" id="weekOk" hidden>저장했습니다.</span>
+        </div>
+      </form>
+      <div class="entries" id="weekPickList"></div>
+    </div>
+  </section>
+
+  <!-- ══════════════ 네 문장 틀 ══════════════ -->
+  <section id="p-frame" role="tabpanel" aria-labelledby="t-frame" hidden>
+    <div class="sec-num">4부</div>
+    <h2>말 꺼내는 순서 — 네 문장 틀</h2>
+    <p class="lead">다 쓸 필요는 없습니다. ①②만으로 충분할 때가 많습니다.</p>
+
+    <div class="tw">
+      <table>
+        <thead><tr><th>순서</th><th>내용</th><th>예시</th></tr></thead>
+        <tbody>
+          <tr><td class="k">① 사실</td><td>평가 없이, 있는 그대로</td><td class="old">"지난주에 장비가 사흘 고장 나 있었습니다."</td></tr>
+          <tr><td class="k">② 마음</td><td>그래서 내가 어떤지</td><td class="old">"그래서 일정이 밀려서 걱정이 됩니다."</td></tr>
+          <tr><td class="k">③ 부탁</td><td>원하는 것을 분명하게</td><td class="old">"마감을 일주일 늦춰 주실 수 있을까요?"</td></tr>
+          <tr><td class="k">④ 대안</td><td>안 될 경우의 다른 방법</td><td class="old">"일주일이 어려우면 사흘이라도 괜찮습니다."</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>직접 써보기</h3>
+    <div class="card">
+      <div class="compose">
+        <div class="cline"><div class="ct">① 사실<small>평가 없이</small></div><textarea id="c1" placeholder="무슨 일이 있었는지, 본 것만"></textarea></div>
+        <div class="cline"><div class="ct">② 마음<small>제일 중요</small></div><textarea id="c2" placeholder="&quot;~해서 좀 ~했습니다&quot;"></textarea></div>
+        <div class="cline"><div class="ct">③ 부탁<small>선택</small></div><textarea id="c3" placeholder="&quot;~해주실 수 있을까요?&quot;"></textarea></div>
+        <div class="cline"><div class="ct">④ 대안<small>선택</small></div><textarea id="c4" placeholder="안 될 경우의 다른 방법"></textarea></div>
+      </div>
+      <div class="preview" id="cPreview" aria-live="polite"><span class="ph">위 칸을 채우면 여기에 한 덩어리로 모입니다.</span></div>
+      <div class="btnrow">
+        <button class="act" type="button" id="cCopy">문장 복사</button>
+        <button class="act ghost" type="button" id="cToWeek">해볼 것으로 보내기</button>
+        <button class="act ghost mini" type="button" id="cClear">비우기</button>
+        <span class="ok" id="cMsg" hidden></span>
+      </div>
+    </div>
+
+    <h3>자주 걸리는 곳</h3>
+    <div class="tw">
+      <table>
+        <thead><tr><th>이럴 때</th><th>이렇게</th></tr></thead>
+        <tbody>
+          <tr><td>①에 평가가 섞일 때<br><span class="note">"장비 관리를 너무 안 하시는 것 같아요"</span></td><td class="new">본 것만<br><span class="note">"장비가 사흘 고장 나 있었습니다"</span></td></tr>
+          <tr><td>②를 건너뛰고 싶을 때</td><td class="new">"~해서 좀 ~했습니다" 한 문장만이라도</td></tr>
+          <tr><td>③에서 말끝이 흐려질 때<br><span class="note">"혹시 안 되면 어쩔 수 없는데요…"</span></td><td class="new">"~해주실 수 있을까요?"로 끝내기</td></tr>
+          <tr><td>상대가 딴 얘기를 할 때</td><td class="new">"네, 그런데 아까 말씀드린 그 건은요…"</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ══════════════ 막힐 때 ══════════════ -->
+  <section id="p-stuck" role="tabpanel" aria-labelledby="t-stuck" hidden>
+    <div class="sec-num">6부 · 8부</div>
+    <h2>막힐 때</h2>
+
+    <div class="tw">
+      <table>
+        <thead><tr><th>이런 일이</th><th>이렇게 보시면 됩니다</th></tr></thead>
+        <tbody>
+          <tr><td class="k">말하고 나서<br>더 불안해질 때</td><td>잘못했다는 신호가 아니라 <strong>익숙하지 않은 일을 했다는 신호</strong>입니다. 몇 시간 뒤에 다시 보면 대개 작아져 있습니다.</td></tr>
+          <tr><td class="k">잘 안 됐을 때</td><td>말을 꺼냈다는 것 자체가 목표였습니다. 원하는 걸 얻는 건 그다음 문제입니다.</td></tr>
+          <tr><td class="k">반응이 애매할 때</td><td>"어…", "음…"은 대부분 그냥 생각 중입니다. 조금 기다려 보세요.</td></tr>
+          <tr><td class="k">아무 말도<br>못 하고 끝났을 때</td><td>무엇이 막았는지만 한 줄. 그 한 줄이 다음번 준비물이 됩니다.</td></tr>
+          <tr><td class="k">한동안<br>손을 놓았을 때</td><td>원래 그렇습니다. <strong>시작하기</strong> 탭의 '다시 시작할 때'를 보세요.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>예상 맞춰보기</h3>
+    <div class="say">
+      <p>"말해봐야 안 들어줄 거야" · "괜히 이상해 보일 거야" · "분위기만 어색해질 거야"</p>
+      <p style="font-size:14.5px; font-family:var(--sans); color:var(--ink-2); margin-top:8px">— 이 예상들은 대부분 한 번도 확인된 적이 없습니다.</p>
+    </div>
+    <p class="note" style="margin-top:10px">혼자 연습할 때 가장 힘이 되는 게 이것입니다. 예상을 적어두고, 실제로 어땠는지 나란히 적어두면 <strong>내 예상이 얼마나 맞는 편인지</strong>가 기록으로 남습니다. 말을 못 한 날도 기록하세요 — 무엇이 막았는지가 거기 적힙니다.</p>
+
+    <h3>이럴 때는 다시 도움을 받으세요</h3>
+    <div class="card" style="border-color:var(--sand); background:var(--sand-soft)">
+      <ul style="margin-bottom:10px">
+        <li>몇 주 동안 잠이나 식사, 일상 리듬이 눈에 띄게 무너질 때</li>
+        <li>사람을 피하는 일이 다시 늘고, 그게 몇 주 이어질 때</li>
+        <li>연습이 부담을 넘어 괴로움이 될 때</li>
+        <li>혼자 감당하기 어렵다는 느낌이 들 때</li>
+      </ul>
+      <p style="margin:0; font-size:14px">다시 상담을 받는 건 <strong>되돌아가는 게 아니라 필요한 걸 챙기는 일</strong>입니다. 종결할 때 안내받은 연락처나 학내 상담센터로 연락하시면 됩니다.</p>
+    </div>
+  </section>
+
+  <!-- ══════════════ 기록 ══════════════ -->
+  <section id="p-log" role="tabpanel" aria-labelledby="t-log" hidden>
+    <div class="sec-num">9부</div>
+    <h2>기록</h2>
+    <p class="lead">쌓인 기록이 곧 증거입니다. 다 채우지 않아도 됩니다.</p>
+
+    <h3>내 기록 돌아보기</h3>
+    <div class="card" id="reviewCard">
+      <div class="stats" id="reviewStats"></div>
+      <div id="reviewDiff"></div>
+    </div>
+
+    <h3>예상 맞춰보기</h3>
+    <div class="card">
+      <form id="fPredict" autocomplete="off">
+        <div class="row2">
+          <div><label class="fl" for="p-date">날짜</label><input type="date" id="p-date" name="date"></div>
+          <div><label class="fl" for="p-who">상대</label><input type="text" id="p-who" name="who" placeholder="예: 조교"></div>
+        </div>
+        <label class="fl" for="p-sit">상황</label>
+        <input type="text" id="p-sit" name="situation" placeholder="언제, 어떤 상황이었는지 한 줄">
+        <label class="fl" for="p-say">할 말</label>
+        <textarea id="p-say" name="say" placeholder="하려던 말 그대로"></textarea>
+        <div class="row2">
+          <div style="flex:3 1 200px"><label class="fl" for="p-exp">예상</label><input type="text" id="p-exp" name="expect" placeholder="무슨 일이 일어날 것 같은지"></div>
+          <div style="flex:0 0 110px"><label class="fl" for="p-conf">확신 (%)</label><input type="number" id="p-conf" name="confidence" min="0" max="100" step="5" placeholder="80"></div>
+        </div>
+        <div class="row2">
+          <div style="flex:0 0 130px"><label class="fl" for="p-out">해봤나요</label>
+            <select id="p-out" name="outcome">
+              <option value="">— 고르기</option>
+              <option value="말했다">말했다</option>
+              <option value="못 했다">못 했다</option>
+            </select>
+          </div>
+          <div style="flex:3 1 200px"><label class="fl" for="p-did">덧붙일 것 <span class="hint">— 못 했으면 무엇이 막았는지</span></label>
+            <input type="text" id="p-did" name="did" placeholder="타이밍을 놓쳤다 / 메시지로 보냈다"></div>
+        </div>
+        <label class="fl" for="p-res">실제 결과</label>
+        <textarea id="p-res" name="result" placeholder="상대가 뭐라고 했는지, 분위기가 어땠는지"></textarea>
+        <label class="fl" for="p-diff">예상과 달랐던 점 <span class="hint">— 여기가 제일 중요합니다</span></label>
+        <textarea id="p-diff" name="diff" placeholder="예상과 실제가 얼마나 달랐는지"></textarea>
+        <div class="btnrow">
+          <button class="act" type="submit">저장</button>
+          <span class="ok" id="predOk" hidden>저장했습니다.</span>
+        </div>
+      </form>
+      <div class="entries" id="predList"></div>
+    </div>
+
+    <h3>돌아보기</h3>
+    <p class="note">한 주에 한 번이든, 한 달에 한 번이든 편한 주기로.</p>
+    <div class="card">
+      <form id="fWeekly" autocomplete="off">
+        <label class="fl" for="k-date">날짜</label>
+        <input type="date" id="k-date" name="date">
+        <label class="fl" for="k-did">해본 것</label>
+        <textarea id="k-did" name="did"></textarea>
+        <label class="fl" for="k-not">못 한 것 / 막은 것</label>
+        <textarea id="k-not" name="blocked"></textarea>
+        <label class="fl" for="k-sur">의외였던 것</label>
+        <textarea id="k-sur" name="surprise"></textarea>
+        <label class="fl" for="k-mis">나한테 잘 통한 것 <span class="hint">— 다음에 또 쓸 방법</span></label>
+        <textarea id="k-mis" name="worked" placeholder="예: 메시지로 먼저 보내니까 훨씬 수월했다"></textarea>
+        <label class="fl" for="k-next">다음에 해볼 것</label>
+        <textarea id="k-next" name="next"></textarea>
+        <div class="btnrow">
+          <button class="act" type="submit">저장</button>
+          <span class="ok" id="weeklyOk" hidden>저장했습니다.</span>
+        </div>
+      </form>
+      <div class="entries" id="weeklyList"></div>
+    </div>
+
+    <h3>기록 보관하기</h3>
+    <p class="note">기기를 바꾸거나 브라우저를 정리하면 기록이 사라집니다. 가끔 한 번씩 복사해서 메모앱이나 메일에 넣어두세요.</p>
+    <div class="btnrow" style="margin-top:0">
+      <button class="act" type="button" id="exBuild">기록 모으기</button>
+      <button class="act ghost" type="button" id="exCopy">복사</button>
+      <button class="act ghost" type="button" id="exPrint">인쇄 / PDF로 저장</button>
+      <span class="ok" id="exMsg" hidden></span>
+    </div>
+    <textarea id="exportBox" readonly aria-label="모아진 기록" placeholder="'기록 모으기'를 누르면 저장된 기록이 여기 모입니다."></textarea>
+    <p class="note" style="margin-top:14px"><button class="del" type="button" id="wipe" style="font-size:13px; text-decoration:underline">저장된 기록 모두 지우기</button> — 되돌릴 수 없습니다.</p>
+
+    <div class="closing">
+      말을 꺼내는 일이 어려운 데에는 대개 이유가 있습니다.<br>
+      연습은, 그때와 지금이 다른지 확인해 보는 일입니다.
+      <b>꺼내봤다는 것만으로 충분한 날이 많습니다.</b>
+    </div>
+  </section>
+
+  <pre id="printOut" hidden></pre>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var K = "maeum.v1.";
+  function load(k, fb){ try{ var v = localStorage.getItem(K+k); return v==null ? fb : JSON.parse(v); }catch(e){ return fb; } }
+  function save(k, v){ try{ localStorage.setItem(K+k, JSON.stringify(v)); return true; }catch(e){ return false; } }
+  function $(s){ return document.querySelector(s); }
+  function el(t, cls, txt){ var n=document.createElement(t); if(cls) n.className=cls; if(txt!=null) n.textContent=txt; return n; }
+  function today(){ var d=new Date(), p=function(n){return (n<10?"0":"")+n;}; return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate()); }
+  function flash(node, msg){ if(!node) return; if(msg) node.textContent=msg; node.hidden=false; setTimeout(function(){ node.hidden=true; }, 2200); }
+  function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+
+  /* ---------- 어떻게 열었는지 안내 ---------- */
+  (function(){
+    var box = $('#openWarn'), tEl = $('#openWarnT'), bEl = $('#openWarnB'), xEl = $('#openWarnX');
+    if(!box || !tEl || !bEl) return;
+
+    var standalone = false;
+    try{
+      standalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches)
+                || navigator.standalone === true;
+    }catch(e){}
+    if(standalone) return;                       // 홈 화면 아이콘으로 연 상태 — 안내 불필요
+
+    var ua = navigator.userAgent || '';
+    var isIOS = /iPad|iPhone|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+    var isAndroid = /Android/.test(ua);
+    if(!isIOS && !isAndroid) return;             // 데스크톱에서는 안내하지 않음
+
+    var kakao = /KAKAOTALK/i.test(ua);
+    var inApp = kakao || /NAVER\(inapp/i.test(ua) || /DaumApps/i.test(ua)
+             || /Instagram|FBAN|FBAV|FB_IAB/i.test(ua) || /Line\//i.test(ua);
+
+    function steps(items){
+      var ol = el('ol');
+      items.forEach(function(s){
+        var li = el('li');
+        li.innerHTML = s;
+        ol.appendChild(li);
+      });
+      return ol;
+    }
+
+    if(inApp){
+      box.classList.remove('hint');
+      tEl.textContent = kakao
+        ? '카카오톡 안에서 열려 있습니다 — 여기서 쓰면 기록이 사라집니다'
+        : '앱 안의 브라우저로 열려 있습니다 — 여기서 쓰면 기록이 사라집니다';
+      bEl.textContent = '';
+      bEl.appendChild(document.createTextNode(
+        '지금 화면에 적는 기록은 이 앱의 브라우저에만 남습니다. 나중에 Safari나 Chrome으로 같은 주소를 열면 기록이 하나도 보이지 않습니다. 처음 한 번만 아래대로 해두세요.'
+      ));
+      bEl.appendChild(steps(
+        isIOS
+        ? ['오른쪽 아래 <b>⋯</b> 메뉴 → <b>Safari로 열기</b>',
+           'Safari 아래쪽 <b>공유 버튼 (↑)</b> → <b>홈 화면에 추가</b>',
+           '이후에는 <b>홈 화면 아이콘으로만</b> 열기']
+        : ['오른쪽 위 <b>⋮</b> 메뉴 → <b>다른 브라우저로 열기</b> → Chrome',
+           'Chrome 오른쪽 위 <b>⋮</b> → <b>홈 화면에 추가</b>',
+           '이후에는 <b>홈 화면 아이콘으로만</b> 열기']
+      ));
+      box.hidden = false;
+      return;                                    // 이 경고는 닫을 수 없게 둔다
+    }
+
+    if(load('hintDone', false)) return;
+
+    box.classList.add('hint');
+    tEl.textContent = '홈 화면에 추가해두면 편합니다';
+    bEl.textContent = '';
+    bEl.appendChild(document.createTextNode(
+      '기록은 지금 이 브라우저에만 저장됩니다. 홈 화면에 추가해두고 그 아이콘으로만 열면 기록이 흩어지지 않습니다.'
+    ));
+    bEl.appendChild(steps(
+      isIOS
+      ? ['아래쪽 <b>공유 버튼 (↑)</b>', '<b>홈 화면에 추가</b>']
+      : ['오른쪽 위 <b>⋮</b> 메뉴', '<b>홈 화면에 추가</b>']
+    ));
+    if(xEl){
+      xEl.hidden = false;
+      xEl.addEventListener('click', function(){ save('hintDone', true); box.hidden = true; });
+    }
+    box.hidden = false;
+  })();
+
+  /* ---------- tabs ---------- */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  function show(id){
+    tabs.forEach(function(t){
+      var on = t.id === id;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      var panel = document.getElementById(t.getAttribute('aria-controls'));
+      if(panel) panel.hidden = !on;
+      if(on) t.scrollIntoView({block:'nearest', inline:'nearest'});
+    });
+    save('tab', id);
+    window.scrollTo({top:0, behavior:'instant' in document.documentElement.style ? 'instant' : 'auto'});
+  }
+  tabs.forEach(function(t, i){
+    t.addEventListener('click', function(){ show(t.id); });
+    t.addEventListener('keydown', function(e){
+      var d = e.key==='ArrowRight' ? 1 : e.key==='ArrowLeft' ? -1 : 0;
+      if(!d) return;
+      e.preventDefault();
+      var n = tabs[(i+d+tabs.length)%tabs.length];
+      n.focus(); show(n.id);
+    });
+  });
+  var lastTab = load('tab', null);
+  if(lastTab && document.getElementById(lastTab)) show(lastTab);
+
+  /* ---------- 감정 단어 ---------- */
+  var EMO = [
+    ["서운함 쪽", ["서운하다","섭섭하다","허전하다","외롭다","소외감이 든다","쓸쓸하다"]],
+    ["불안 쪽", ["불안하다","초조하다","긴장된다","조마조마하다","겁난다","막막하다"]],
+    ["부끄러움 쪽", ["창피하다","민망하다","부끄럽다","위축된다","작아지는 느낌이다"]],
+    ["화 쪽", ["짜증난다","답답하다","억울하다","분하다","못마땅하다","어이없다"]],
+    ["지침 쪽", ["지친다","무기력하다","귀찮다","아무것도 하기 싫다","멍하다"]],
+    ["좋은 쪽", ["반갑다","후련하다","뿌듯하다","편안하다","안심된다","신난다","고맙다"]]
+  ];
+  var picked = [];
+  var groupsHost = $('#emoGroups');
+  if(groupsHost){
+    EMO.forEach(function(g){
+      var wrap = el('div','fgroup');
+      wrap.appendChild(el('div','glabel', g[0]));
+      var chips = el('div','chips');
+      g[1].forEach(function(w){
+        var b = el('button','chip', w);
+        b.type='button'; b.setAttribute('aria-pressed','false');
+        b.addEventListener('click', function(){
+          var on = b.getAttribute('aria-pressed')==='true';
+          b.setAttribute('aria-pressed', on?'false':'true');
+          if(on){ picked = picked.filter(function(x){return x!==w;}); }
+          else if(picked.indexOf(w)<0){ picked.push(w); }
+          renderPicked();
+        });
+        chips.appendChild(b);
+      });
+      wrap.appendChild(chips);
+      groupsHost.appendChild(wrap);
+    });
+  }
+  function renderPicked(){
+    var box = $('#emoPicked'); if(!box) return;
+    box.textContent = '';
+    if(!picked.length){ var s=el('span','ph','지금 느껴지는 것을 눌러보세요. 여러 개 골라도 됩니다.'); box.appendChild(s); return; }
+    box.appendChild(document.createTextNode('지금 — '));
+    box.appendChild(el('b', null, picked.join(', ')));
+  }
+  var emoToLog = $('#emoToLog');
+  if(emoToLog) emoToLog.addEventListener('click', function(){
+    if(!picked.length){ flash($('#emoMsg'), '먼저 하나 이상 골라주세요.'); return; }
+    var f = $('#d-emo'); if(f) f.value = picked.join(', ');
+    var dd = $('#d-date'); if(dd && !dd.value) dd.value = today();
+    flash($('#emoMsg'), "'하루 1분'의 감정 칸에 넣었습니다.");
+    if(f) f.scrollIntoView({block:'center', behavior:'smooth'});
+  });
+  var emoClear = $('#emoClear');
+  if(emoClear) emoClear.addEventListener('click', function(){
+    picked = [];
+    document.querySelectorAll('.chip').forEach(function(c){ c.setAttribute('aria-pressed','false'); });
+    renderPicked();
+  });
+
+  /* ---------- 사과 카운터 ---------- */
+  var apo = load('apology', {date:today(), n:0});
+  if(apo.date !== today()) apo = {date:today(), n:0};
+  function drawApo(){
+    var n=$('#apoN'), d=$('#apoDate');
+    if(n) n.textContent = apo.n;
+    if(d) d.textContent = apo.date + ' · 오늘 센 횟수';
+  }
+  function bumpApo(v){ apo.n = Math.max(0, apo.n+v); save('apology', apo); drawApo(); }
+  drawApo();
+  if($('#apoUp')) $('#apoUp').addEventListener('click', function(){ bumpApo(1); });
+  if($('#apoDown')) $('#apoDown').addEventListener('click', function(){ bumpApo(-1); });
+  if($('#apoReset')) $('#apoReset').addEventListener('click', function(){ apo.n=0; save('apology',apo); drawApo(); });
+
+  /* ---------- 나만의 사다리 ---------- */
+  var LEVELS = [
+    {key:'low',   name:'낮음',      color:'var(--sage)'},
+    {key:'mid',   name:'중간',      color:'var(--sand)'},
+    {key:'high',  name:'높음',      color:'var(--plum)'},
+    {key:'top',   name:'가장 높음', color:'var(--ink-3)'}
+  ];
+  var LAD_SEED = {
+    low:[{who:'가게 점원', say:'', step:'2'},{who:'후배', say:'', step:'1'}],
+    mid:[{who:'같은 과 동기', say:'', step:'1'}],
+    high:[{who:'조교', say:'', step:'3'}],
+    top:[{who:'', say:'', step:''}]
+  };
+  var lad = load('ladder', LAD_SEED);
+  var ladHost = $('#myLadder');
+  function ladRow(lv, row, i){
+    var r = el('div','mylad-row');
+    var who = el('input'); who.type='text'; who.className='who'; who.placeholder='상대 / 상황'; who.value=row.who||'';
+    who.id = 'lad-'+lv+'-who-'+i;
+    var say = el('input'); say.type='text'; say.placeholder='해볼 말'; say.value=row.say||'';
+    say.id = 'lad-'+lv+'-say-'+i;
+    var step = el('select'); step.id='lad-'+lv+'-step-'+i;
+    step.setAttribute('aria-label','단계');
+    [['','단계'],['1','1단계'],['2','2단계'],['3','3단계'],['4','4단계'],['5','5단계']].forEach(function(o){
+      var op=el('option',null,o[1]); op.value=o[0]; if(String(row.step||'')===o[0]) op.selected=true; step.appendChild(op);
+    });
+    [who,say,step].forEach(function(f){
+      f.addEventListener('input', function(){ row.who=who.value; row.say=say.value; row.step=step.value; });
+      f.addEventListener('change', function(){ row.who=who.value; row.say=say.value; row.step=step.value; });
+    });
+    var del = el('button','del','지우기'); del.type='button';
+    del.addEventListener('click', function(){ lad[lv].splice(i,1); if(!lad[lv].length) lad[lv].push({who:'',say:'',step:''}); drawLad(); });
+    r.appendChild(who); r.appendChild(say); r.appendChild(step); r.appendChild(del);
+    return r;
+  }
+  function drawLad(){
+    if(!ladHost) return;
+    ladHost.textContent='';
+    LEVELS.forEach(function(L){
+      if(!lad[L.key] || !lad[L.key].length) lad[L.key]=[{who:'',say:'',step:''}];
+      var g = el('div','mylad-g');
+      var h = el('div','mylad-h');
+      var b = el('b'); var dot=el('span','dot'); dot.style.background=L.color;
+      b.appendChild(dot); b.appendChild(document.createTextNode('난이도 ' + L.name));
+      var add = el('button','del','+ 칸 추가'); add.type='button';
+      add.addEventListener('click', function(){ lad[L.key].push({who:'',say:'',step:''}); drawLad(); });
+      h.appendChild(b); h.appendChild(add);
+      var rows = el('div','mylad-rows');
+      lad[L.key].forEach(function(row,i){ rows.appendChild(ladRow(L.key,row,i)); });
+      g.appendChild(h); g.appendChild(rows);
+      ladHost.appendChild(g);
+    });
+  }
+  drawLad();
+  if($('#ladSave')) $('#ladSave').addEventListener('click', function(){
+    flash($('#ladOk'), save('ladder', lad) ? '저장했습니다.' : '이 브라우저에서는 저장이 안 됩니다. 복사해 두세요.');
+  });
+
+  /* ---------- generic record lists ---------- */
+  function store(key){
+    var arr = load(key, []);
+    return {
+      all:function(){ return arr; },
+      add:function(o){ o.id=uid(); arr.unshift(o); return save(key, arr); },
+      remove:function(id){ arr = arr.filter(function(x){return x.id!==id;}); save(key, arr); }
+    };
+  }
+  function entryCard(rec, fields, onDel){
+    var c = el('div','entry');
+    var top = el('div','top');
+    top.appendChild(el('span','when', (rec.date||'') + (rec.who ? ' · ' + rec.who : '')));
+    var d = el('button','del','지우기'); d.type='button'; d.addEventListener('click', onDel);
+    top.appendChild(d);
+    c.appendChild(top);
+    var dl = el('dl');
+    fields.forEach(function(f){
+      var v = rec[f[0]];
+      if(v==null || String(v).trim()==='') return;
+      dl.appendChild(el('dt',null,f[1]));
+      dl.appendChild(el('dd',null,String(v)));
+    });
+    c.appendChild(dl);
+    return c;
+  }
+  var refreshReview = function(){};
+  function wireForm(opts){
+    var form = $(opts.form); if(!form) return null;
+    var st = store(opts.key);
+    var host = $(opts.list);
+    function draw(){
+      if(!host) return;
+      host.textContent='';
+      var all = st.all();
+      if(!all.length){ host.appendChild(el('div','empty', opts.empty || '아직 저장된 기록이 없습니다.')); return; }
+      all.forEach(function(rec){
+        host.appendChild(entryCard(rec, opts.fields, function(){ st.remove(rec.id); draw(); refreshReview(); }));
+      });
+    }
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var data = {};
+      var any = false;
+      Array.prototype.forEach.call(form.elements, function(f){
+        if(!f.name) return;
+        data[f.name] = f.value.trim();
+        if(f.name!=='date' && f.value.trim()) any = true;
+      });
+      if(!data.date) data.date = today();
+      if(!any){ flash($(opts.ok), '한 칸이라도 채워주세요.'); return; }
+      var okSave = st.add(data);
+      draw();
+      refreshReview();
+      form.reset();
+      flash($(opts.ok), okSave ? '저장했습니다.' : '이 브라우저에서는 저장이 안 됩니다. 복사해 두세요.');
+    });
+    draw();
+    return {store:st, draw:draw};
+  }
+
+  var daily = wireForm({
+    form:'#fDaily', key:'daily', list:'#dailyList', ok:'#dailyOk',
+    empty:'아직 저장된 하루 1분 기록이 없습니다. 자기 전에 한 줄이면 충분합니다.',
+    fields:[['moment','순간'],['body','몸'],['emotion','감정'],['thought','생각']]
+  });
+  var predict = wireForm({
+    form:'#fPredict', key:'predict', list:'#predList', ok:'#predOk',
+    empty:'아직 저장된 예상 기록이 없습니다. 말을 못 한 날도 기록이 됩니다.',
+    fields:[['situation','상황'],['say','할 말'],['expect','예상'],['confidence','확신 %'],['outcome','해봤나'],['did','덧붙임'],['result','실제 결과'],['diff','달랐던 점']]
+  });
+  var weekly = wireForm({
+    form:'#fWeekly', key:'weekly', list:'#weeklyList', ok:'#weeklyOk',
+    empty:'아직 저장된 돌아보기가 없습니다.',
+    fields:[['did','해본 것'],['blocked','못 한 것 / 막은 것'],['surprise','의외였던 것'],['worked','잘 통한 것'],['next','다음에']]
+  });
+  var weekPick = wireForm({
+    form:'#fWeekPick', key:'weekpick', list:'#weekPickList', ok:'#weekOk',
+    empty:'아직 정한 목표가 없습니다. 하나만 고르면 됩니다.',
+    fields:[['situation','상황'],['say','할 말'],['when','언제']]
+  });
+
+  /* ---------- 내 기록 돌아보기 ---------- */
+  function stat(n, label, cls){
+    var d = el('div','stat' + (cls?' '+cls:''));
+    d.appendChild(el('b', null, String(n)));
+    d.appendChild(el('span', null, label));
+    return d;
+  }
+  refreshReview = function(){
+    var sh = $('#reviewStats'), dh = $('#reviewDiff');
+    if(!sh || !dh) return;
+    var dailyAll = load('daily',[]), predAll = load('predict',[]), weeklyAll = load('weekly',[]);
+    var said = predAll.filter(function(r){ return r.outcome === '말했다'; }).length;
+    var notSaid = predAll.filter(function(r){ return r.outcome === '못 했다'; }).length;
+    var diffs = predAll.filter(function(r){ return (r.diff||'').trim(); });
+    var days = {};
+    dailyAll.concat(predAll).forEach(function(r){ if(r.date) days[r.date]=1; });
+    var dayCount = Object.keys(days).length;
+
+    sh.textContent = '';
+    if(!dailyAll.length && !predAll.length && !weeklyAll.length){
+      dh.textContent = '';
+      var e = el('div','empty','아직 기록이 없습니다. 하나만 쌓여도 여기에 나타납니다.');
+      sh.appendChild(e);
+      return;
+    }
+    sh.appendChild(stat(dayCount, '기록한 날'));
+    sh.appendChild(stat(said, '말해본 것'));
+    sh.appendChild(stat(notSaid, '못 한 것', 'warm'));
+    sh.appendChild(stat(diffs.length, '예상과 달랐던 것', 'cool'));
+
+    dh.textContent = '';
+    if(!diffs.length){
+      var h0 = el('div','diffhead','예상과 실제가 달랐던 기록');
+      h0.appendChild(el('span', null, "예상 맞춰보기에 '예상과 달랐던 점'을 적으면 여기 모입니다. 막힐 때 읽어보시라고 모아두는 칸입니다."));
+      dh.appendChild(h0);
+      return;
+    }
+    var h = el('div','diffhead','예상과 실제가 달랐던 기록 ' + diffs.length + '개');
+    h.appendChild(el('span', null, '말이 안 나올 때 여기부터 읽어보세요. 지금 떠오른 예상도 저 기록들과 비슷할 수 있습니다.'));
+    dh.appendChild(h);
+    var list = el('div','diffs');
+    diffs.forEach(function(r){
+      var d = el('div','d');
+      d.appendChild(el('div','w', (r.date||'') + (r.who ? ' · ' + r.who : '') + (r.outcome ? ' · ' + r.outcome : '')));
+      if((r.expect||'').trim()) d.appendChild(el('div','e', '예상 — ' + r.expect + (r.confidence ? ' (' + r.confidence + '% 확신)' : '')));
+      d.appendChild(el('div','r', r.diff));
+      list.appendChild(d);
+    });
+    dh.appendChild(list);
+  };
+  refreshReview();
+
+  /* ---------- 네 문장 틀 ---------- */
+  var cIds = ['#c1','#c2','#c3','#c4'];
+  function composed(){
+    return cIds.map(function(s){ var n=$(s); return n ? n.value.trim() : ''; }).filter(Boolean).join('\n');
+  }
+  function drawPreview(){
+    var p = $('#cPreview'); if(!p) return;
+    var t = composed();
+    p.textContent='';
+    if(!t){ p.appendChild(el('span','ph','위 칸을 채우면 여기에 한 덩어리로 모입니다. ①②만 채워도 됩니다.')); return; }
+    p.textContent = t;
+  }
+  cIds.forEach(function(s){ var n=$(s); if(n) n.addEventListener('input', drawPreview); });
+  drawPreview();
+  function copyText(t, msgNode, okMsg){
+    if(!t){ flash(msgNode, '먼저 내용을 채워주세요.'); return; }
+    var done = function(){ flash(msgNode, okMsg); };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(t).then(done, function(){ fallback(); });
+    } else { fallback(); }
+    function fallback(){
+      var ta = document.createElement('textarea');
+      ta.value = t; ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); done(); }
+      catch(e){ flash(msgNode, '복사가 안 됩니다. 직접 선택해 복사해 주세요.'); }
+      document.body.removeChild(ta);
+    }
+  }
+  if($('#cCopy')) $('#cCopy').addEventListener('click', function(){ copyText(composed(), $('#cMsg'), '복사했습니다.'); });
+  if($('#cClear')) $('#cClear').addEventListener('click', function(){ cIds.forEach(function(s){ var n=$(s); if(n) n.value=''; }); drawPreview(); });
+  if($('#cToWeek')) $('#cToWeek').addEventListener('click', function(){
+    var t = composed();
+    if(!t){ flash($('#cMsg'), '먼저 내용을 채워주세요.'); return; }
+    var f = $('#w-say'); if(f) f.value = t.replace(/\n/g, ' ');
+    flash($('#cMsg'), "'5단계 사다리' 탭의 해볼 것 칸에 넣었습니다.");
+  });
+
+  /* ---------- 내보내기 ---------- */
+  function section(title, arr, fields){
+    if(!arr.length) return '';
+    var out = '\n■ ' + title + ' (' + arr.length + '건)\n';
+    arr.slice().reverse().forEach(function(r){
+      out += '\n  · ' + (r.date||'') + (r.who ? ' / ' + r.who : '') + '\n';
+      fields.forEach(function(f){
+        var v = r[f[0]];
+        if(v==null || String(v).trim()==='') return;
+        out += '    - ' + f[1] + ': ' + String(v).replace(/\n/g,' ') + '\n';
+      });
+    });
+    return out;
+  }
+  function buildExport(){
+    var t = '마음 꺼내기 연습 기록\n뽑은 날: ' + today() + '\n';
+    t += section('하루 1분', load('daily',[]), [['moment','순간'],['body','몸'],['emotion','감정'],['thought','생각']]);
+    t += section('예상 맞춰보기', load('predict',[]), [['situation','상황'],['say','할 말'],['expect','예상'],['confidence','확신 %'],['outcome','해봤나'],['did','덧붙임'],['result','실제 결과'],['diff','달랐던 점']]);
+    t += section('해볼 것으로 정한 것', load('weekpick',[]), [['situation','상황'],['say','할 말'],['when','언제']]);
+    t += section('돌아보기', load('weekly',[]), [['did','해본 것'],['blocked','못 한 것 / 막은 것'],['surprise','의외였던 것'],['worked','잘 통한 것'],['next','다음에']]);
+    var L = load('ladder', null), lines = '';
+    if(L){
+      LEVELS.forEach(function(lv){
+        (L[lv.key]||[]).forEach(function(r){
+          if((r.who||'').trim() || (r.say||'').trim())
+            lines += '    - ' + lv.name + ': ' + (r.who||'') + (r.say ? ' — "' + r.say + '"' : '') + (r.step ? ' (' + r.step + '단계)' : '') + '\n';
+        });
+      });
+    }
+    if(lines) t += '\n■ 나만의 난이도 사다리\n' + lines;
+    var ap = load('apology', null);
+    if(ap && ap.n) t += '\n■ 사과 세어보기\n    - ' + ap.date + ': ' + ap.n + '번\n';
+    if(t.indexOf('■') < 0) t += '\n저장된 기록이 아직 없습니다.\n';
+    return t;
+  }
+  if($('#exBuild')) $('#exBuild').addEventListener('click', function(){
+    var b=$('#exportBox'); if(b){ b.value = buildExport(); b.scrollTop=0; }
+    flash($('#exMsg'), '모았습니다.');
+  });
+  if($('#exCopy')) $('#exCopy').addEventListener('click', function(){
+    var b=$('#exportBox');
+    if(b && !b.value) b.value = buildExport();
+    copyText(b ? b.value : '', $('#exMsg'), '복사했습니다.');
+  });
+  if($('#exPrint')) $('#exPrint').addEventListener('click', function(){
+    var b=$('#exportBox'); if(b && !b.value) b.value = buildExport();
+    var po=$('#printOut'); if(po) po.textContent = (b && b.value) ? b.value : buildExport();
+    window.print();
+  });
+  if($('#wipe')) $('#wipe').addEventListener('click', function(){
+    var btn = this;
+    if(btn.dataset.armed !== '1'){
+      btn.dataset.armed = '1';
+      btn.textContent = '한 번 더 누르면 모두 지워집니다';
+      setTimeout(function(){ btn.dataset.armed=''; btn.textContent='저장된 기록 모두 지우기'; }, 5000);
+      return;
+    }
+    try{
+      ['daily','predict','weekly','weekpick','ladder','apology','tab'].forEach(function(k){ localStorage.removeItem(K+k); });
+    }catch(e){}
+    location.reload();
+  });
+
+  /* ---------- 날짜 기본값 ---------- */
+  ['#d-date','#p-date','#k-date'].forEach(function(s){ var n=$(s); if(n && !n.value) n.value = today(); });
+})();
+</script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('./sw.js').catch(function () {});
+    });
+  }
+</script>
+
+</body>
+</html>

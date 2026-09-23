@@ -92,6 +92,14 @@
   }
   .banner-x:hover{color:var(--ink); border-color:var(--ink-3)}
   .banner-x:focus-visible{outline:2px solid var(--sage); outline-offset:2px}
+  .banner-go{
+    margin-top:10px; margin-right:8px; font-family:var(--sans); font-size:13.5px; font-weight:600;
+    color:#fff; background:var(--sand); border:1px solid var(--sand); border-radius:9px;
+    padding:7px 14px; cursor:pointer;
+  }
+  .banner-go:hover{filter:brightness(1.07)}
+  .banner-go:focus-visible{outline:2px solid var(--sage); outline-offset:2px}
+  .banner .done{display:inline-block; margin-top:10px; font-size:12.5px; color:var(--sand); font-weight:600}
 
   /* ---------- nav ---------- */
   nav{
@@ -315,6 +323,8 @@
     <div class="banner" id="openWarn" hidden>
       <div class="bt" id="openWarnT"></div>
       <div class="bb" id="openWarnB"></div>
+      <button class="banner-go" id="openWarnCopy" type="button" hidden>주소 복사하기</button>
+      <span class="done" id="openWarnMsg" hidden></span>
       <button class="banner-x" id="openWarnX" type="button" hidden>알겠습니다, 닫기</button>
     </div>
   </header>
@@ -770,7 +780,8 @@
 
   /* ---------- 어떻게 열었는지 안내 ---------- */
   (function(){
-    var box = $('#openWarn'), tEl = $('#openWarnT'), bEl = $('#openWarnB'), xEl = $('#openWarnX');
+    var box = $('#openWarn'), tEl = $('#openWarnT'), bEl = $('#openWarnB'),
+        xEl = $('#openWarnX'), cpEl = $('#openWarnCopy');
     if(!box || !tEl || !bEl) return;
 
     var standalone = false;
@@ -806,17 +817,23 @@
         : '앱 안의 브라우저로 열려 있습니다 — 여기서 쓰면 기록이 사라집니다';
       bEl.textContent = '';
       bEl.appendChild(document.createTextNode(
-        '지금 화면에 적는 기록은 이 앱의 브라우저에만 남습니다. 나중에 Safari나 Chrome으로 같은 주소를 열면 기록이 하나도 보이지 않습니다. 처음 한 번만 아래대로 해두세요.'
+        '지금 화면에 적는 기록은 이 브라우저에만 남습니다. 나중에 ' + (isIOS ? 'Safari로' : 'Chrome으로') +
+        ' 같은 주소를 열면 기록이 하나도 보이지 않습니다. 처음 한 번만 아래대로 해두세요.'
       ));
-      bEl.appendChild(steps(
+      bEl.appendChild(steps([
+        '아래 <b>주소 복사하기</b> 누르기',
+        (isIOS ? '<b>Safari</b>' : '<b>Chrome</b>') + ' 앱을 열고 주소창에 <b>붙여넣기</b> 후 이동',
         isIOS
-        ? ['아래쪽 <b>공유 버튼</b>(위로 향한 화살표 ↑) → <b>Safari로 열기</b>',
-           'Safari에서 다시 아래쪽 <b>공유 버튼</b>(↑) → <b>홈 화면에 추가</b>',
-           '이후에는 <b>홈 화면 아이콘으로만</b> 열기']
-        : ['오른쪽 위 <b>⋮</b> 메뉴 → <b>다른 브라우저로 열기</b> → Chrome',
-           'Chrome 오른쪽 위 <b>⋮</b> → <b>홈 화면에 추가</b>',
-           '이후에는 <b>홈 화면 아이콘으로만</b> 열기']
-      ));
+          ? '아래쪽 <b>공유 버튼(↑)</b> — 없으면 <b>⋯</b> → <b>공유</b> — 에서 <b>홈 화면에 추가</b>'
+          : '오른쪽 위 <b>⋮</b> 메뉴 → <b>홈 화면에 추가</b>',
+        '이후에는 <b>홈 화면 아이콘으로만</b> 열기'
+      ]));
+      if(cpEl){
+        cpEl.hidden = false;
+        cpEl.addEventListener('click', function(){
+          copyText(location.href.split('#')[0], $('#openWarnMsg'), '복사했습니다. ' + (isIOS ? 'Safari를' : 'Chrome을') + ' 열고 붙여넣으세요.');
+        });
+      }
       box.hidden = false;
       return;                                    // 이 경고는 닫을 수 없게 둔다
     }
@@ -831,7 +848,7 @@
     ));
     bEl.appendChild(steps(
       isIOS
-      ? ['아래쪽 <b>공유 버튼 (↑)</b>', '<b>홈 화면에 추가</b>']
+      ? ['아래쪽 <b>공유 버튼(↑)</b> — 없으면 <b>⋯</b> → <b>공유</b>', '<b>홈 화면에 추가</b>']
       : ['오른쪽 위 <b>⋮</b> 메뉴', '<b>홈 화면에 추가</b>']
     ));
     if(xEl){

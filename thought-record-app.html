@@ -96,32 +96,12 @@
   })();
   </script>
 
-  <!-- Service Worker 등록 (오프라인 캐싱 — 인라인 Blob SW) -->
+  <!-- Service Worker 등록 (오프라인 캐싱) -->
   <script>
   if ('serviceWorker' in navigator) {
-    const swCode = `
-const CACHE = 'thought-record-v1';
-const ASSETS = [
-  'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Sans+KR:wght@300;400;500&family=Noto+Serif+KR:wght@300;400&display=swap'
-];
-self.addEventListener('install', e => {
-  self.skipWaiting();
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS).catch(()=>{})));
-});
-self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));
-  self.clients.claim();
-});
-self.addEventListener('fetch', e => {
-  e.respondWith(
-    caches.match(e.request).then(cached => cached || fetch(e.request).catch(() => new Response('', {status:503})))
-  );
-});`;
-    try {
-      const blob = new Blob([swCode], {type:'text/javascript'});
-      const url  = URL.createObjectURL(blob);
-      navigator.serviceWorker.register(url, {scope: '/'}).catch(()=>{});
-    } catch(e){}
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('./thought-record-sw.js').catch(function () {});
+    });
   }
   </script>
 
